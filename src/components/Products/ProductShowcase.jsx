@@ -1,63 +1,84 @@
 import React from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation } from 'swiper/modules';
+import { Navigation, Pagination, Mousewheel, FreeMode } from 'swiper/modules';
 import ProductCard from './ProductCard';
+import { productsData } from '../../data/productsData';
+
+// استيراد الـ Styles الأساسية
 import 'swiper/css';
 import 'swiper/css/navigation';
+import 'swiper/css/free-mode';
 
-const ProductShowcase = ({ title }) => {
-  const products = [
-    { id: 1, name: "lotus pendant", weight: "4.50", karat: "21", company: "BTC", img: "/images/gold-1.jpg" },
-    { id: 2, name: "royal bangle", weight: "12.20", karat: "18", company: "SAM", img: "/images/gold-2.jpg" },
-    { id: 3, name: "classic ring", weight: "3.15", karat: "21", company: "Nour Gold", img: "/images/gold-3.jpg" },
-    { id: 4, name: "gold bar", weight: "10.00", karat: "24", company: "PAMP", img: "/images/gold-4.jpg" },
-    { id: 5, name: "infinity chain", weight: "7.80", karat: "18", company: "L'azurde", img: "/images/gold-5.jpg" },
-    { id: 6, name: "royal set", weight: "25.00", karat: "21", company: "Nour Gold", img: "/images/gold-6.jpg" },
-  ];
+const ProductShowcase = ({ title, category }) => {
+  const filteredProducts = productsData.filter(p => p.category === category);
+
+  const prevId = `prev-${category}`;
+  const nextId = `next-${category}`;
 
   return (
-    <div className="bg-white py-2">
-      {/* العنوان - خليته متوسطن ومعاه زرار شيك */}
-      <div className="flex flex-col items-center mb-6 px-4">
-        <h2 className="text-2xl md:text-4xl font-serif italic text-[#001b44] lowercase mb-2">
-          {title}
-        </h2>
-        <a href="/all" className="text-[10px] font-bold tracking-[0.3em] uppercase border-b border-black/20 pb-1 hover:border-black transition-all">
-          Explore All
-        </a>
+    <div className="bg-white py-8 md:py-12 border-b border-gray-50">
+      {/* الهيدر */}
+      <div className="px-4 md:px-12 mb-6 flex items-center justify-between">
+        <div className="flex items-center gap-2 md:gap-4">
+          <h2 className="text-xl md:text-4xl font-black italic uppercase tracking-tighter text-black">
+            {title}
+          </h2>
+          <div className="hidden md:block w-16 h-[2px] bg-black"></div>
+        </div>
+
+        <div className="flex items-center gap-4">
+          <a href="/all" className="text-[10px] md:text-xs font-bold uppercase tracking-widest border-b-2 border-black pb-1">
+            DISCOVER ALL →
+          </a>
+          <div className="hidden md:flex gap-1">
+            <button id={prevId} className="w-8 h-8 border border-gray-200 flex items-center justify-center hover:bg-black hover:text-white disabled:opacity-20 transition-all">
+              <span className="text-sm text-center mb-0.5">❮</span>
+            </button>
+            <button id={nextId} className="w-8 h-8 border border-gray-200 flex items-center justify-center hover:bg-black hover:text-white disabled:opacity-20 transition-all">
+              <span className="text-sm text-center mb-0.5">❯</span>
+            </button>
+          </div>
+        </div>
       </div>
 
-      <div className="relative group/slider w-full border-t border-gray-50">
+      {/* السلايدر بتصغير الكروت وتشغيل السحب */}
+      <div className="px-4 md:px-12">
         <Swiper
-          modules={[Navigation]}
-          spaceBetween={0}
-          slidesPerView={2}
-          navigation={{ nextEl: '.custom-next', prevEl: '.custom-prev' }}
-          breakpoints={{
-            640: { slidesPerView: 3 },
-            1024: { slidesPerView: 5.2 }, // عرض أكتر عشان يظهروا صغيرين
+          modules={[Navigation, FreeMode, Mousewheel]}
+          navigation={{
+            prevEl: `#${prevId}`,
+            nextEl: `#${nextId}`,
           }}
-          className="w-full"
+          // تفعيل السحب بالماوس وبالإيد
+          grabCursor={true}
+          freeMode={true}
+          mousewheel={{ forceToAxis: true }}
+          breakpoints={{
+            // موبايل: كروت أصغر (نعرض 2 كروت وحتة)
+            320: { 
+              slidesPerView: 2.2, 
+              spaceBetween: 12 
+            },
+            // تابلت: نعرض 3 كروت وحتة
+            768: { 
+              slidesPerView: 3.5, 
+              spaceBetween: 15 
+            },
+            // كمبيوتر: كروت أصغر (نعرض 5.5 كارت بدلاً من 4)
+            1024: { 
+              slidesPerView: 5.2, 
+              spaceBetween: 20 
+            },
+          }}
+          className="w-full overflow-visible"
         >
-          {products.map((item) => (
-            <SwiperSlide key={item.id} className="border-r border-gray-50">
-              <ProductCard {...item} />
+          {filteredProducts.map((product) => (
+            <SwiperSlide key={product.id}>
+              <ProductCard {...product} />
             </SwiperSlide>
           ))}
         </Swiper>
-
-        {/* الأسهم الجانبية - شفافة وبتظهر بس عند الـ Hover */}
-        <button className="custom-prev absolute left-0 top-[40%] z-10 w-12 h-20 bg-white/40 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover/slider:opacity-100 transition-all duration-500">
-          <span className="text-black text-2xl font-light">❮</span>
-        </button>
-        <button className="custom-next absolute right-0 top-[40%] z-10 w-12 h-20 bg-white/40 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover/slider:opacity-100 transition-all duration-500">
-          <span className="text-black text-2xl font-light">❯</span>
-        </button>
       </div>
-
-      <style dangerouslySetInnerHTML={{ __html: `
-        .swiper-button-disabled { display: none !important; }
-      `}} />
     </div>
   );
 };
