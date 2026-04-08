@@ -9,6 +9,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
+    // مراقبة السكرول في الحاوية الرئيسية
     const snapContainer = document.getElementById('snap-container');
     const handleScroll = () => {
       if (snapContainer && snapContainer.scrollTop > 20) setIsScrolled(true);
@@ -20,21 +21,22 @@ const Navbar = () => {
 
   return (
     <>
+      {/* تم الحفاظ على fixed لضمان بقاء الهيدر في الأعلى دائماً */}
       <nav className={`fixed top-0 left-0 w-full z-[9999] transition-all duration-500 px-6 md:px-20 ${
-        isScrolled ? 'bg-[#001b44]/95 backdrop-blur-md py-3 shadow-lg' : 'bg-transparent py-6'
+        isScrolled ? 'bg-[#001b44]/95 backdrop-blur-md py-3 shadow-lg' : 'bg-[#001b44] py-6'
       }`}>
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <button onClick={() => setIsOpen(true)} className="lg:hidden text-[#d4af37] p-2">
             <Menu size={28} />
           </button>
 
-          <Logo isScrolled={isScrolled} />
+          <Logo isScrolled={true} />
 
           <div className="hidden lg:block">
-            <NavLinks isScrolled={isScrolled} />
+            <NavLinks isScrolled={true} />
           </div>
 
-          <Actions isScrolled={isScrolled} />
+          <Actions isScrolled={true} />
         </div>
       </nav>
 

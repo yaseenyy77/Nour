@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom'; // استيراد Link
 import { ChevronDown } from 'lucide-react';
 
 const NavLinks = ({ isScrolled, mobile, closeMenu }) => {
   const [activeDropdown, setActiveDropdown] = useState(null);
 
   const links = [
-    { title: 'Home', href: '#' },
+    { title: 'Home', href: '/' },
     { title: 'About', subLinks: ['Our Story', 'Craftsmanship', 'Locations'] },
-    { title: 'Shop Now', subLinks: ['Rings', 'Necklaces', 'Bullion'] },
+    { title: 'Shop Now', href: '/shop' }, // ربط المسار بصفحة الشوب
     { title: 'Contact', href: '#' },
   ];
 
@@ -23,18 +24,19 @@ const NavLinks = ({ isScrolled, mobile, closeMenu }) => {
             className="flex items-center justify-between cursor-pointer"
             onClick={() => mobile && link.subLinks ? toggleDropdown(index) : null}
           >
-            <a 
-              href={link.href} 
+            {/* استخدام Link بدلاً من a للتنقل السريع بدون تحميل */}
+            <Link 
+              to={link.href} 
+              onClick={closeMenu}
               className={`${isScrolled || mobile ? 'text-white' : 'text-white/90'} font-serif tracking-widest uppercase text-sm hover:text-[#d4af37] transition-colors`}
             >
               {link.title}
-            </a>
+            </Link>
             {link.subLinks && mobile && (
               <ChevronDown size={18} className={`text-[#d4af37] transition-transform ${activeDropdown === index ? 'rotate-180' : ''}`} />
             )}
           </div>
 
-          {/* القائمة المنسدلة في الموبايل */}
           {link.subLinks && mobile && activeDropdown === index && (
             <ul className="mt-4 flex flex-col gap-3 pl-4 border-l border-[#d4af37]/30">
               {link.subLinks.map((sub, i) => (

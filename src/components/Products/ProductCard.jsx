@@ -1,32 +1,37 @@
 import React from 'react';
 
-const ProductCard = ({ name, weight, karat, img }) => {
+const ProductCard = ({ title, karat, weight, image }) => {
   return (
-    <div className="group cursor-pointer w-full bg-white flex flex-col">
-      {/* حاوية الصورة - خلفية فاتحة جداً وهامش بسيط */}
-      <div className="relative aspect-[3/4] bg-[#f9f9f9] overflow-hidden">
+    <div className="group cursor-pointer flex flex-col w-full">
+      
+      {/* حاوية الصورة */}
+      <div className="relative aspect-[4/5] overflow-hidden bg-gray-100 mb-3">
         <img 
-          src={img} 
-          alt={name} 
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          src={image} 
+          alt={title} 
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
         />
-      </div>
-
-      {/* تفاصيل المنتج - محاذاة لليسار وخطوط واضحة */}
-      <div className="py-4 px-2 flex flex-col gap-1">
-        <h3 className="text-[11px] md:text-[13px] font-bold uppercase tracking-tight text-black">
-          {name}
-        </h3>
-        <div className="flex items-center gap-2">
-          <span className="text-[10px] md:text-[12px] font-medium text-gray-900">
-            {karat} Karat
-          </span>
-          <span className="text-gray-300">|</span>
-          <span className="text-[10px] md:text-[12px] font-medium text-gray-900">
-            {weight}g
-          </span>
+        
+        <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-4">
+          <button className="bg-white text-black text-[10px] font-bold py-2 px-6 uppercase tracking-widest hover:bg-black hover:text-white transition-colors">
+            View Details
+          </button>
         </div>
       </div>
+
+      {/* تفاصيل المنتج بدون السعر */}
+      <div className="flex flex-col space-y-1">
+        <h3 className="text-[11px] md:text-[13px] font-black uppercase tracking-tight text-black line-clamp-1">
+          {title}
+        </h3>
+        
+        <div className="flex items-center gap-2 text-[10px] text-gray-400 font-medium">
+          <span>{karat}</span>
+          <span className="w-[1px] h-3 bg-gray-200"></span>
+          <span>{weight}</span>
+        </div>
+      </div>
+
     </div>
   );
 };
