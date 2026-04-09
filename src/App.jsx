@@ -8,20 +8,16 @@ import Shop from './pages/Shop';
 import Wishlist from './pages/Wishlist';
 import ProductDetails from './pages/ProductDetails';
 
-// استيراد الصفحات الجديدة التي تظهر في مجلد pages عندك
+// استيراد الصفحات الجديدة
 import Dashboard from './pages/Dashboard';
 import AdminLogin from './pages/AdminLogin';
+import ProtectedRoute from './components/UI/ProtectedRoute';
 
 function App() {
   return (
     <FavoritesProvider>
       <Router>
-        {/* الحاوية الرئيسية التي تدعم الـ Snap Scrolling */}
-        <main 
-          id="snap-container" 
-          className="h-screen overflow-y-scroll snap-y scroll-smooth relative bg-white"
-        >
-          {/* الناف بار ثابت ويحس بحركة الـ scroll */}
+        <main id="snap-container" className="h-screen overflow-y-scroll snap-y scroll-smooth relative bg-white">
           <Navbar /> 
 
           <Routes>
@@ -30,12 +26,20 @@ function App() {
             <Route path="/wishlist" element={<Wishlist />} />
             <Route path="/product/:id" element={<ProductDetails />} />
             
-            {/* مسارات لوحة التحكم والأدمن */}
-            <Route path="/dashboard" element={<Dashboard />} /> 
+            {/* صفحة تسجيل الدخول */}
             <Route path="/admin-login" element={<AdminLogin />} />
+
+            {/* حماية صفحة الداش بورد - لن تفتح إلا بعد تسجيل الدخول */}
+            <Route 
+              path="/dashboard" 
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              } 
+            />
           </Routes>
 
-          {/* الفوتر في سكشن منفصل للـ Snap */}
           <section className="bg-[#001b44] snap-start">
             <Footer />
           </section>
