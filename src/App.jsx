@@ -8,7 +8,7 @@ import Shop from './pages/Shop';
 import Wishlist from './pages/Wishlist';
 import ProductDetails from './pages/ProductDetails';
 
-// استيراد الصفحات الجديدة مع المسار المحدث للداش بورد
+// الاستيراد بالمسار الجديد الصحيح
 import Dashboard from './pages/Dashboard/Dashboard'; 
 import AdminLogin from './pages/AdminLogin';
 import ProtectedRoute from './components/UI/ProtectedRoute';
@@ -19,18 +19,12 @@ function App() {
       <Router>
         <main id="snap-container" className="h-screen overflow-y-scroll snap-y scroll-smooth relative bg-white">
           <Navbar /> 
-
           <Routes>
-            {/* المسارات العامة */}
             <Route path="/" element={<Home />} />
             <Route path="/shop" element={<Shop />} />
             <Route path="/wishlist" element={<Wishlist />} />
             <Route path="/product/:id" element={<ProductDetails />} />
-            
-            {/* صفحة تسجيل الدخول للأدمن */}
             <Route path="/admin-login" element={<AdminLogin />} />
-
-            {/* حماية صفحة الداش بورد - الدخول يتطلب تسجيل الدخول */}
             <Route 
               path="/dashboard" 
               element={
@@ -40,8 +34,6 @@ function App() {
               } 
             />
           </Routes>
-
-          {/* تذييل الصفحة (Footer) */}
           <section className="bg-[#001b44] snap-start">
             <Footer />
           </section>
