@@ -8,8 +8,8 @@ import Shop from './pages/Shop';
 import Wishlist from './pages/Wishlist';
 import ProductDetails from './pages/ProductDetails';
 
-// استيراد الصفحات الجديدة
-import Dashboard from './pages/Dashboard';
+// استيراد الصفحات الجديدة مع المسار المحدث للداش بورد
+import Dashboard from './pages/Dashboard/Dashboard'; 
 import AdminLogin from './pages/AdminLogin';
 import ProtectedRoute from './components/UI/ProtectedRoute';
 
@@ -21,15 +21,16 @@ function App() {
           <Navbar /> 
 
           <Routes>
+            {/* المسارات العامة */}
             <Route path="/" element={<Home />} />
             <Route path="/shop" element={<Shop />} />
             <Route path="/wishlist" element={<Wishlist />} />
             <Route path="/product/:id" element={<ProductDetails />} />
             
-            {/* صفحة تسجيل الدخول */}
+            {/* صفحة تسجيل الدخول للأدمن */}
             <Route path="/admin-login" element={<AdminLogin />} />
 
-            {/* حماية صفحة الداش بورد - لن تفتح إلا بعد تسجيل الدخول */}
+            {/* حماية صفحة الداش بورد - الدخول يتطلب تسجيل الدخول */}
             <Route 
               path="/dashboard" 
               element={
@@ -40,6 +41,7 @@ function App() {
             />
           </Routes>
 
+          {/* تذييل الصفحة (Footer) */}
           <section className="bg-[#001b44] snap-start">
             <Footer />
           </section>
