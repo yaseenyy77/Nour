@@ -23,7 +23,7 @@ const Navbar = () => {
     <>
       {/* تم الحفاظ على fixed لضمان بقاء الهيدر في الأعلى دائماً */}
       <nav className={`fixed top-0 left-0 w-full z-[9999] transition-all duration-500 px-6 md:px-20 ${
-        isScrolled ? 'bg-[#001b44]/95 backdrop-blur-md py-3 shadow-lg' : 'bg-[#001b44] py-6'
+        isScrolled ? 'bg-[#001b44]/95 backdrop-blur-md py-3 shadow-lg' : 'bg-[#001b4400] py-6'
       }`}>
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <button onClick={() => setIsOpen(true)} className="lg:hidden text-[#d4af37] p-2">
