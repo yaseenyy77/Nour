@@ -18,7 +18,6 @@ const LayoutWrapper = ({ children }) => {
 
   return (
     <>
-      {/* الناف بار هيفضل موجود وبياخد الـ scroll من الصفحة كلها */}
       {!isDashboard && <Navbar />} 
       {children}
       {!isDashboard && (
@@ -35,9 +34,8 @@ function App() {
     <FavoritesProvider>
       <Router>
         <LayoutWrapper>
-          {/* شلنا h-screen و overflow-y-scroll عشان نلغي السكرول المزدوج */}
-          {/* سيبنا الـ id لو الأنيميشين بتاعك بيعتمد عليه كـ Reference */}
-          <main id="snap-container" className="relative bg-white min-h-screen">
+          {/* رجعنا الـ id والـ h-screen عشان الأنيميشين يشتغل، بس شلنا الـ snap scroll عشان نصلح الـ Double Scroll */}
+          <main id="snap-container" className="h-screen overflow-y-auto relative bg-white border-none outline-none">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/shop" element={<Shop />} />
