@@ -18,6 +18,7 @@ const LayoutWrapper = ({ children }) => {
 
   return (
     <>
+      {/* الناف بار هيفضل موجود وبياخد الـ scroll من الصفحة كلها */}
       {!isDashboard && <Navbar />} 
       {children}
       {!isDashboard && (
@@ -33,9 +34,10 @@ function App() {
   return (
     <FavoritesProvider>
       <Router>
-        {/* شيلنا الـ snap-container والـ overflow اللي كانت مسببة المشكلة */}
         <LayoutWrapper>
-          <main className="min-h-screen bg-white relative">
+          {/* شلنا h-screen و overflow-y-scroll عشان نلغي السكرول المزدوج */}
+          {/* سيبنا الـ id لو الأنيميشين بتاعك بيعتمد عليه كـ Reference */}
+          <main id="snap-container" className="relative bg-white min-h-screen">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/shop" element={<Shop />} />
