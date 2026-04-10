@@ -13,14 +13,17 @@ const Dashboard = () => {
         {activeView === 'menu' ? (
           <div className="flex flex-col items-center animate-in fade-in zoom-in duration-700">
             <div className="text-center mb-20">
-                <div className="flex justify-center mb-4 text-[#d4af37]"><LayoutDashboard size={40}/></div>
+              <div className="flex justify-center mb-4 text-[#d4af37]">
+                <LayoutDashboard size={40}/>
+              </div>
               <h1 className="text-6xl font-black text-[#123456] tracking-tighter mb-4 uppercase italic">
                 Nour Gold <span className="text-[#d4af37]">Portal</span>
               </h1>
               <p className="text-gray-400 text-xs font-black tracking-[0.5em] uppercase">Control Panel & Inventory</p>
             </div>
 
-            <div className="flex flex-col md:row gap-12 justify-center w-full max-w-4xl">
+            {/* تم تصحيح الخطأ هنا من md:row إلى md:flex-row */}
+            <div className="flex flex-col md:flex-row gap-12 justify-center w-full max-w-4xl">
               
               <button
                 onClick={() => setActiveView('products')}

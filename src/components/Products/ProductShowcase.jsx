@@ -14,11 +14,13 @@ const ProductShowcase = ({ title, category }) => {
 
   useEffect(() => {
     const fetchItems = async () => {
-      // جلب المنتجات المخصصة لهذا السكشن فقط بناءً على الـ Category
+      // تنظيف اسم الكاتيجوري لضمان المطابقة (مسح الفراغات وتحويلها لسمول)
+      const cleanCategory = category.toLowerCase().trim();
+      
       const { data, error } = await supabase
         .from('sliders')
         .select('*')
-        .eq('category', category.toLowerCase());
+        .eq('category', cleanCategory);
       
       if (!error) setItems(data || []);
       setLoading(false);
@@ -26,10 +28,10 @@ const ProductShowcase = ({ title, category }) => {
     fetchItems();
   }, [category]);
 
-  const prevId = `prev-${category}`;
-  const nextId = `next-${category}`;
+  const prevId = `prev-${category.replace(/\s+/g, '-')}`;
+  const nextId = `next-${category.replace(/\s+/g, '-')}`;
 
-  if (loading) return null; // أو لودينج خفيف
+  if (loading) return null;
 
   return (
     <div className="bg-white py-12 border-b border-gray-50 overflow-hidden">
@@ -61,7 +63,7 @@ const ProductShowcase = ({ title, category }) => {
             {items.map((item) => (
               <SwiperSlide key={item.id}>
                 <ProductCard 
-                  name={`${category.slice(0,-1)} Royal`} 
+                  name={`${category.replace(/s$/, '')} Royal`} 
                   image={item.image}
                   material={item.karat}
                   weight={item.weight}
