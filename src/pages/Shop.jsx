@@ -25,11 +25,7 @@ const Shop = () => {
     <div className="min-h-screen bg-white pt-20 pb-20">
       <ShopHeader totalProducts={filteredProducts.length} viewMode={viewMode} setViewMode={setViewMode} isFilterOpen={isFilterOpen} setIsFilterOpen={setIsFilterOpen} />
       <div className="flex gap-12 px-4 md:px-16 mt-8 items-start relative">
-        {isFilterOpen && (
-          <div className="sticky top-32 w-[280px] shrink-0 hidden md:block">
-            <FilterSidebar isOpen={true} selectedFilters={selectedFilters} setSelectedFilters={setSelectedFilters} />
-          </div>
-        )}
+        <FilterSidebar isOpen={isFilterOpen} selectedFilters={selectedFilters} setSelectedFilters={setSelectedFilters} />
         <div className="flex-1 w-full">
           {filteredProducts.length > 0 ? (
             <div className={`grid gap-4 md:gap-6 ${viewMode === 1 ? 'grid-cols-1' : viewMode === 2 ? 'grid-cols-2' : viewMode === 3 ? 'grid-cols-2 md:grid-cols-3' : 'grid-cols-2 lg:grid-cols-4'}`}>
