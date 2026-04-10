@@ -14,9 +14,7 @@ const ProductShowcase = ({ title, category }) => {
 
   useEffect(() => {
     const fetchItems = async () => {
-      // تنظيف اسم الكاتيجوري لضمان المطابقة (مسح الفراغات وتحويلها لسمول)
       const cleanCategory = category.toLowerCase().trim();
-      
       const { data, error } = await supabase
         .from('sliders')
         .select('*')
@@ -44,8 +42,8 @@ const ProductShowcase = ({ title, category }) => {
         </div>
         
         <div className="flex gap-3">
-          <button id={prevId} className="w-12 h-12 border border-gray-100 flex items-center justify-center hover:bg-[#001b44] hover:text-white transition-all rounded-full shadow-lg">❮</button>
-          <button id={nextId} className="w-12 h-12 border border-gray-100 flex items-center justify-center hover:bg-[#001b44] hover:text-white transition-all rounded-full shadow-lg">❯</button>
+          <button id={prevId} className="w-10 h-10 border border-gray-100 flex items-center justify-center hover:bg-[#001b44] hover:text-white transition-all rounded-full shadow-sm">❮</button>
+          <button id={nextId} className="w-10 h-10 border border-gray-100 flex items-center justify-center hover:bg-[#001b44] hover:text-white transition-all rounded-full shadow-sm">❯</button>
         </div>
       </div>
 
@@ -72,9 +70,9 @@ const ProductShowcase = ({ title, category }) => {
             ))}
           </Swiper>
         ) : (
-          <div className="py-20 text-center bg-gray-50 rounded-[2rem] border-2 border-dashed border-gray-200">
-            <p className="text-[#001b44] font-black uppercase tracking-[0.3em] text-[10px] opacity-30">
-              New {category} Collection Arriving Soon
+          <div className="py-16 text-center border-2 border-dashed border-gray-100 rounded-[2rem]">
+            <p className="text-[#001b44] font-black uppercase tracking-widest text-[10px] opacity-20">
+              New {category} Collection Coming Soon
             </p>
           </div>
         )}
