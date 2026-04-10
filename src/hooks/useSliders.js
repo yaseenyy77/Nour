@@ -1,33 +1,29 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '../supabaseClient'; // تم التصحيح: نطلع خطوة واحدة لـ src
+import { supabase } from '../supabaseClient'; 
 
-// 1. Hook لجلب بيانات السلايدرز حسب القسم
-export const useSliders = (category) => {
+// سحب منتجات الـ Inventory (الشوب)
+export const useInventory = () => {
   return useQuery({
-    queryKey: ['sliders', category],
+    queryKey: ['inventory'],
     queryFn: async () => {
-      let query = supabase.from('sliders').select('*');
-      if (category) {
-        query = query.eq('category', category.toLowerCase());
-      }
-      const { data, error } = await query.order('created_at', { ascending: false });
-      if (error) throw new Error(error.message);
+      // هنا بنسحب من جدول المنتجات الأساسي (تأكد من اسم الجدول عندك، غالباً 'products')
+      const { data, error } = await supabase.from('products').select('*').order('created_at', { ascending: false });
+      if (error) throw error;
       return data;
     },
   });
 };
 
-// 2. Hook لإضافة منتج جديد
-export const useAddSlider = () => {
+// حذف منتج من الـ Inventory
+export const useDeleteProduct = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (newSlider) => {
-      const { data, error } = await supabase.from('sliders').insert([newSlider]);
-      if (error) throw new Error(error.message);
-      return data;
+    mutationFn: async (id) => {
+      const { error } = await supabase.from('products').delete().eq('id', id);
+      if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['sliders'] });
+      queryClient.invalidateQueries({ queryKey: ['inventory'] });
     },
   });
 };
