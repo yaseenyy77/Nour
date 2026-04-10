@@ -12,20 +12,44 @@ import Dashboard from './pages/Dashboard/Dashboard';
 import AdminLogin from './pages/AdminLogin';
 import ProtectedRoute from './components/UI/ProtectedRoute';
 
-const LayoutWrapper = ({ children }) => {
+// عملنا مكون جديد يلم الموقع كله عشان نعرف نستخدم useLocation
+const AppContent = () => {
   const location = useLocation();
   const isDashboard = location.pathname.startsWith('/dashboard');
 
   return (
-    <>
+    // هنا السر: الحاوي ده هو الوحيد اللي واخد الشاشة كلها وبيعمل سكرول
+    // كدة Navbar هيشوف السكرول ويشغل الأنيميشين، ومفيش دبل سكرول
+    <div id="snap-container" className="h-screen overflow-y-auto overflow-x-hidden relative bg-white">
+      
       {!isDashboard && <Navbar />} 
-      {children}
+
+      {/* الـ main هنا بياخد مساحته الطبيعية من غير ما يعمل سكرول تاني */}
+      <main className="min-h-screen relative">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/shop" element={<Shop />} />
+          <Route path="/wishlist" element={<Wishlist />} />
+          <Route path="/product/:id" element={<ProductDetails />} />
+          <Route path="/admin-login" element={<AdminLogin />} />
+          <Route 
+            path="/dashboard" 
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            } 
+          />
+        </Routes>
+      </main>
+
       {!isDashboard && (
         <section className="bg-[#001b44]">
           <Footer />
         </section>
       )}
-    </>
+      
+    </div>
   );
 };
 
@@ -33,26 +57,7 @@ function App() {
   return (
     <FavoritesProvider>
       <Router>
-        <LayoutWrapper>
-          {/* رجعنا الـ id والـ h-screen عشان الأنيميشين يشتغل، بس شلنا الـ snap scroll عشان نصلح الـ Double Scroll */}
-          <main id="snap-container" className="h-screen overflow-y-auto relative bg-white border-none outline-none">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/shop" element={<Shop />} />
-              <Route path="/wishlist" element={<Wishlist />} />
-              <Route path="/product/:id" element={<ProductDetails />} />
-              <Route path="/admin-login" element={<AdminLogin />} />
-              <Route 
-                path="/dashboard" 
-                element={
-                  <ProtectedRoute>
-                    <Dashboard />
-                  </ProtectedRoute>
-                } 
-              />
-            </Routes>
-          </main>
-        </LayoutWrapper>
+        <AppContent />
       </Router>
     </FavoritesProvider>
   );
