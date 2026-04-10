@@ -12,10 +12,8 @@ import Dashboard from './pages/Dashboard/Dashboard';
 import AdminLogin from './pages/AdminLogin';
 import ProtectedRoute from './components/UI/ProtectedRoute';
 
-// مكون فرعي للتحكم في ظهور الهيدر والفوتر
 const LayoutWrapper = ({ children }) => {
   const location = useLocation();
-  // هنا بنحدد إن لو المسار بيبدأ بـ dashboard مش هنعرض الهيدر والفوتر
   const isDashboard = location.pathname.startsWith('/dashboard');
 
   return (
@@ -23,7 +21,7 @@ const LayoutWrapper = ({ children }) => {
       {!isDashboard && <Navbar />} 
       {children}
       {!isDashboard && (
-        <section className="bg-[#001b44] snap-start">
+        <section className="bg-[#001b44]">
           <Footer />
         </section>
       )}
@@ -35,8 +33,9 @@ function App() {
   return (
     <FavoritesProvider>
       <Router>
+        {/* شيلنا الـ snap-container والـ overflow اللي كانت مسببة المشكلة */}
         <LayoutWrapper>
-          <main id="snap-container" className="h-screen overflow-y-scroll snap-y scroll-smooth relative bg-white">
+          <main className="min-h-screen bg-white relative">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/shop" element={<Shop />} />
