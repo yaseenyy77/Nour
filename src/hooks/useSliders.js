@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '../supabaseClient';
+import { supabase } from '../supabaseClient'; 
 
-// --- هوكس السلايدرز (عشان السيستم يفضل شغال) ---
+// --- هوكس السلايدرز ---
 export const useSliders = (category) => {
   return useQuery({
     queryKey: ['sliders', category],
@@ -27,7 +27,7 @@ export const useAddSlider = () => {
   });
 };
 
-// --- هوكس الشوب (Inventory) - ده السيستم اللي إنت عايزه ---
+// --- هوكس الشوب (هنا السر في الحذف الفوري) ---
 export const useInventory = () => {
   return useQuery({
     queryKey: ['inventory'],
@@ -47,7 +47,7 @@ export const useDeleteProduct = () => {
       if (error) throw error;
     },
     onSuccess: () => {
-      // ده السطر اللي بيخلي المنتج يختفي فوراً من قدامك
+      // السطر ده هو اللي بيمسح القطعة من قدام عينك في الجدول فوراً
       queryClient.invalidateQueries({ queryKey: ['inventory'] });
     },
   });
