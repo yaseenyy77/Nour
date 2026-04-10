@@ -1,24 +1,20 @@
 import React, { useState } from 'react';
 import ShopProductsForm from './ShopProductsForm'; 
-// استيراد الهوكس الجديدة اللي بتعمل التحديث التلقائي
+// استيراد الهوكس اللي إحنا عملناها عشان تكون زي السلايدرز
 import { useInventory, useDeleteProduct } from '../../../../hooks/useSliders'; 
 import { Trash2, ArrowLeft, Plus, List, Loader2 } from 'lucide-react';
 
 const ProductManagement = ({ onBack }) => {
   const [showForm, setShowForm] = useState(false);
   
-  // استخدام React Query لجلب وحذف البيانات
+  // استخدام React Query بدل useEffect و useState اليدوي
   const { data: products = [], isLoading } = useInventory(); 
   const deleteMutation = useDeleteProduct();
 
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this royal piece?')) {
-      deleteMutation.mutate(id, {
-        onSuccess: () => {
-          // مش محتاج تعمل أي حاجة هنا، الـ Hook هيحدث الجدول لوحده
-        },
-        onError: (err) => alert("خطأ في الحذف: " + err.message)
-      });
+      // هنا التنفيذ زي السلايدرز بالظبط
+      deleteMutation.mutate(id);
     }
   };
 
@@ -42,7 +38,6 @@ const ProductManagement = ({ onBack }) => {
 
       {showForm ? (
         <div className="max-w-4xl mx-auto">
-          {/* تأكد إن الفورم برضه بيستخدم الهوك الجديد للإضافة */}
           <ShopProductsForm onProductAdded={() => setShowForm(false)} />
         </div>
       ) : (
@@ -66,7 +61,7 @@ const ProductManagement = ({ onBack }) => {
                 {products.map((p) => (
                   <tr key={p.id} className="hover:bg-blue-50/40 transition-colors group">
                     <td className="p-6">
-                      <img src={p.image} alt="" className="w-20 h-20 object-cover rounded-2xl border-2 border-white" />
+                      <img src={p.image} alt="" className="w-20 h-20 object-cover rounded-2xl border-2 border-white shadow-sm" />
                     </td>
                     <td className="p-6">
                       <div className="font-black text-[#123456] text-xl">{p.name}</div>
@@ -79,7 +74,11 @@ const ProductManagement = ({ onBack }) => {
                         disabled={deleteMutation.isPending}
                         className="p-4 text-red-500 hover:bg-red-50 rounded-2xl transition-all disabled:opacity-30"
                       >
-                        <Trash2 size={24} />
+                        {deleteMutation.isPending && deleteMutation.variables === p.id ? (
+                           <Loader2 className="animate-spin" size={24} />
+                        ) : (
+                           <Trash2 size={24} />
+                        )}
                       </button>
                     </td>
                   </tr>
@@ -87,7 +86,7 @@ const ProductManagement = ({ onBack }) => {
               </tbody>
             </table>
           )}
-          {!isLoading && products.length === 0 && <div className="p-20 text-center text-gray-400 italic font-black">Vault is empty.</div>}
+          {!isLoading && products.length === 0 && <div className="p-20 text-center text-gray-400 font-black uppercase tracking-widest">Vault is empty.</div>}
         </div>
       )}
     </div>
