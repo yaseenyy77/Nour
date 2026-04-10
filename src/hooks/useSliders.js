@@ -1,11 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '../supabaseClient'; // تأكد إن المسار ده صح بالنسبة لمكان الملف
+import { supabase } from '../supabaseClient'; 
 
-// ==========================================
-// 1. هوكس السلايدرز (الصفحة الرئيسية)
-// ==========================================
-
-// جلب بيانات السلايدرز حسب الكاتيجوري
+// 1. هوك جلب بيانات السلايدرز (الرئيسية)
 export const useSliders = (category) => {
   return useQuery({
     queryKey: ['sliders', category],
@@ -21,44 +17,10 @@ export const useSliders = (category) => {
   });
 };
 
-// إضافة منتج جديد للسلايدر
-export const useAddSlider = () => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: async (newSlider) => {
-      const { data, error } = await supabase.from('sliders').insert([newSlider]);
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: () => {
-      // تحديث بيانات السلايدرز فوراً
-      queryClient.invalidateQueries({ queryKey: ['sliders'] });
-    },
-  });
-};
-
-// حذف منتج من السلايدر
-export const useDeleteSlider = () => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: async (id) => {
-      const { error } = await supabase.from('sliders').delete().eq('id', id);
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['sliders'] });
-    },
-  });
-};
-
-// ==========================================
-// 2. هوكس الـ Inventory (صفحة الشوب)
-// ==========================================
-
-// جلب كل منتجات الشوب
+// 2. هوك جلب بيانات الـ Inventory (الشوب) - اللي فيه المشكلة
 export const useInventory = () => {
   return useQuery({
-    queryKey: ['inventory'],
+    queryKey: ['inventory'], // ده المفتاح اللي هنستخدمه للتحديث
     queryFn: async () => {
       const { data, error } = await supabase
         .from('products')
@@ -70,7 +32,22 @@ export const useInventory = () => {
   });
 };
 
-// إضافة منتج جديد للشوب
+// 3. هوك حذف منتج من الشوب - تم تعديل الـ Success لتحديث الجدول
+export const useDeleteProduct = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id) => {
+      const { error } = await supabase.from('products').delete().eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      // السطر ده هو اللي هيخلي "yaseen 3mk" يختفي فوراً من الجدول
+      queryClient.invalidateQueries({ queryKey: ['inventory'] });
+    },
+  });
+};
+
+// 4. هوك إضافة منتج للشوب
 export const useAddProduct = () => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -80,21 +57,6 @@ export const useAddProduct = () => {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['inventory'] });
-    },
-  });
-};
-
-// حذف منتج من الشوب (اللي كان عامل لك مشكلة)
-export const useDeleteProduct = () => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: async (id) => {
-      const { error } = await supabase.from('products').delete().eq('id', id);
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      // دي أهم حتة: بتخلي الشوب يمسح القطعة من الشاشة فوراً
       queryClient.invalidateQueries({ queryKey: ['inventory'] });
     },
   });
