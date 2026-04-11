@@ -4,7 +4,7 @@ import { useAddProduct } from '../../../../hooks/useSliders';
 const ShopProductsForm = ({ onProductAdded }) => {
   const [formData, setFormData] = useState({ 
     name: '', 
-    category: 'Rings', // محدث للفئات المطلوبة
+    category: 'Ring', // مفرد ليتطابق مع الفلتر
     karat: '21K', 
     weight: '', 
     brand: "L'azurde",
@@ -17,7 +17,7 @@ const ShopProductsForm = ({ onProductAdded }) => {
     e.preventDefault();
     addMutation.mutate(formData, {
       onSuccess: () => {
-        setFormData({ name: '', category: 'Rings', karat: '21K', weight: '', brand: "L'azurde", image: '' });
+        setFormData({ name: '', category: 'Ring', karat: '21K', weight: '', brand: "L'azurde", image: '' });
         if (onProductAdded) onProductAdded();
       }
     });
@@ -33,7 +33,7 @@ const ShopProductsForm = ({ onProductAdded }) => {
             placeholder="Name" 
             value={formData.name} 
             onChange={(e)=>setFormData({...formData, name: e.target.value})} 
-            className="w-full p-4 rounded-2xl border-2 outline-none focus:border-[#123456] transition-all font-bold" 
+            className="w-full p-4 rounded-2xl border-2 font-bold outline-none border-white focus:border-[#d4af37] transition-all" 
           />
         </div>
 
@@ -41,13 +41,13 @@ const ShopProductsForm = ({ onProductAdded }) => {
           <label className="text-[10px] font-black uppercase text-[#123456] mb-2 block ml-2">Category</label>
           <select 
             value={formData.category} 
-            onChange={(e)=>setFormData({...formData, category: e.target.value})} 
+            onChange={(e)=>setFormData({...formData, category: e.target.value})}
             className="w-full p-4 rounded-2xl border-2 font-bold outline-none"
           >
-            <option value="Rings">Rings</option>
-            <option value="Necklaces">Necklaces</option>
-            <option value="Bracelets">Bracelets</option>
-            <option value="Earrings">Earrings</option>
+            <option value="Ring">Ring</option>
+            <option value="Necklace">Necklace</option>
+            <option value="Bracelet">Bracelet</option>
+            <option value="Earring">Earring</option>
           </select>
         </div>
 
@@ -55,7 +55,7 @@ const ShopProductsForm = ({ onProductAdded }) => {
           <label className="text-[10px] font-black uppercase text-[#123456] mb-2 block ml-2">Brand</label>
           <select 
             value={formData.brand} 
-            onChange={(e)=>setFormData({...formData, brand: e.target.value})} 
+            onChange={(e)=>setFormData({...formData, brand: e.target.value})}
             className="w-full p-4 rounded-2xl border-2 font-bold outline-none"
           >
             <option value="L'azurde">L'azurde</option>
@@ -68,7 +68,7 @@ const ShopProductsForm = ({ onProductAdded }) => {
           <label className="text-[10px] font-black uppercase text-[#123456] mb-2 block ml-2">Karat</label>
           <select 
             value={formData.karat} 
-            onChange={(e)=>setFormData({...formData, karat: e.target.value})} 
+            onChange={(e)=>setFormData({...formData, karat: e.target.value})}
             className="w-full p-4 rounded-2xl border-2 font-bold outline-none"
           >
             <option value="18K">18K</option>
@@ -88,7 +88,7 @@ const ShopProductsForm = ({ onProductAdded }) => {
           />
         </div>
 
-        <div>
+        <div className="md:col-span-2">
           <label className="text-[10px] font-black uppercase text-[#123456] mb-2 block ml-2">Image URL</label>
           <input 
             required 
@@ -102,9 +102,9 @@ const ShopProductsForm = ({ onProductAdded }) => {
 
       <button 
         disabled={addMutation.isPending} 
-        className="w-full bg-[#123456] text-white p-5 rounded-2xl font-black uppercase tracking-widest hover:bg-[#d4af37] transition-all shadow-lg active:scale-95"
+        className="w-full bg-[#123456] text-white p-5 rounded-2xl font-black uppercase tracking-widest hover:bg-[#d4af37] transition-all disabled:opacity-50 shadow-xl shadow-blue-900/20"
       >
-        {addMutation.isPending ? 'Saving to Vault...' : 'Confirm & Save Piece'}
+        {addMutation.isPending ? 'Saving to Vault...' : 'Confirm Piece'}
       </button>
     </form>
   );

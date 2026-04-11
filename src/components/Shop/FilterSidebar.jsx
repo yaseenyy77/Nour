@@ -3,7 +3,6 @@ import { Check, RotateCcw } from 'lucide-react';
 
 const FilterSidebar = ({ isOpen, selectedFilters, setSelectedFilters }) => {
   const filterCategories = [
-    // تأكد أن الكلمات هنا مطابقة لما يتم تخزينه في الداتابيز (Ring وليس Rings)
     { id: 'category', title: 'Product Category', options: ['Ring', 'Necklace', 'Bracelet', 'Earring'] },
     { id: 'karat', title: 'Gold Karat', options: ['18K', '21K', '24K'] },
     { id: 'brand', title: 'Brand', options: ["L'azurde", "Egypt Gold", "Jawhara"] },
@@ -22,11 +21,14 @@ const FilterSidebar = ({ isOpen, selectedFilters, setSelectedFilters }) => {
 
   return (
     <aside className={`bg-white transition-all duration-500 overflow-hidden ${isOpen ? 'w-[280px] opacity-100' : 'w-0 opacity-0'} sticky top-32`}>
-      <div className="w-[280px]"> {/* Container لضمان عدم اهتزاز المحتوى أثناء الحركة */}
+      <div className="w-[280px]">
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-[#001b44] font-black uppercase italic tracking-tighter">Filters</h2>
           {Object.values(selectedFilters).flat().length > 0 && (
-            <button onClick={() => setSelectedFilters({ category: [], karat: [], brand: [] })} className="text-[#d4af37] flex items-center gap-1 text-[9px] font-bold uppercase hover:underline">
+            <button 
+              onClick={() => setSelectedFilters({ category: [], karat: [], brand: [] })} 
+              className="text-[#d4af37] flex items-center gap-1 text-[9px] font-bold uppercase hover:underline transition-all"
+            >
               <RotateCcw size={12} /> Reset
             </button>
           )}

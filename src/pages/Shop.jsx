@@ -10,24 +10,24 @@ const Shop = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [selectedFilters, setSelectedFilters] = useState({ category: [], karat: [], brand: [] });
 
-  // ⚡ منطق الفلترة الاحترافي ⚡
+  // محرك الفلترة المحدث
   const filteredProducts = useMemo(() => {
     return products.filter(product => {
-      // 1. فلترة الفئة (تتعامل مع أي اختلاف في الحروف)
+      // فلترة الفئة
       const catMatch = selectedFilters.category.length === 0 || 
                        selectedFilters.category.some(cat => 
                          product.category?.toLowerCase() === cat.toLowerCase()
                        );
       
-      // 2. فلترة العيار
+      // فلترة العيار
       const karatMatch = selectedFilters.karat.length === 0 || 
                          selectedFilters.karat.includes(product.karat);
       
-      // 3. فلترة البراند
+      // فلترة البراند
       const brandMatch = selectedFilters.brand.length === 0 || 
-                         selectedFilters.brand.some(br => 
-                           product.brand?.toLowerCase() === br.toLowerCase()
-                         );
+                       selectedFilters.brand.some(br => 
+                         product.brand?.toLowerCase() === br.toLowerCase()
+                       );
 
       return catMatch && karatMatch && brandMatch;
     });
@@ -45,14 +45,12 @@ const Shop = () => {
         setIsFilterOpen={setIsFilterOpen} 
       />
       <div className="flex gap-12 px-4 md:px-16 mt-8 items-start relative">
-        {/* السايد بار */}
         <FilterSidebar 
           isOpen={isFilterOpen} 
           selectedFilters={selectedFilters} 
           setSelectedFilters={setSelectedFilters} 
         />
         
-        {/* عرض المنتجات */}
         <div className="flex-1 w-full">
           {filteredProducts.length > 0 ? (
             <div className={`grid gap-4 md:gap-6 ${
@@ -67,7 +65,7 @@ const Shop = () => {
             </div>
           ) : (
             <div className="py-40 text-center border-2 border-dashed border-gray-50 rounded-[3rem]">
-               <p className="text-gray-300 font-black uppercase tracking-[0.4em] text-sm">No items found in this section</p>
+               <p className="text-gray-300 font-black uppercase tracking-[0.4em] text-sm">No items found</p>
             </div>
           )}
         </div>
