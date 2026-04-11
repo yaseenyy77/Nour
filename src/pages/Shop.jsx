@@ -10,12 +10,25 @@ const Shop = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [selectedFilters, setSelectedFilters] = useState({ category: [], karat: [], brand: [] });
 
-  // منطق الفلترة المطور لربط الخانات الجديدة
+  // ⚡ منطق الفلترة الاحترافي ⚡
   const filteredProducts = useMemo(() => {
     return products.filter(product => {
-      const catMatch = selectedFilters.category.length === 0 || selectedFilters.category.includes(product.category);
-      const karatMatch = selectedFilters.karat.length === 0 || selectedFilters.karat.includes(product.karat);
-      const brandMatch = selectedFilters.brand.length === 0 || selectedFilters.brand.includes(product.brand);
+      // 1. فلترة الفئة (تتعامل مع أي اختلاف في الحروف)
+      const catMatch = selectedFilters.category.length === 0 || 
+                       selectedFilters.category.some(cat => 
+                         product.category?.toLowerCase() === cat.toLowerCase()
+                       );
+      
+      // 2. فلترة العيار
+      const karatMatch = selectedFilters.karat.length === 0 || 
+                         selectedFilters.karat.includes(product.karat);
+      
+      // 3. فلترة البراند
+      const brandMatch = selectedFilters.brand.length === 0 || 
+                         selectedFilters.brand.some(br => 
+                           product.brand?.toLowerCase() === br.toLowerCase()
+                         );
+
       return catMatch && karatMatch && brandMatch;
     });
   }, [selectedFilters, products]);
@@ -24,12 +37,30 @@ const Shop = () => {
 
   return (
     <div className="min-h-screen bg-white pt-20 pb-20">
-      <ShopHeader totalProducts={filteredProducts.length} viewMode={viewMode} setViewMode={setViewMode} isFilterOpen={isFilterOpen} setIsFilterOpen={setIsFilterOpen} />
+      <ShopHeader 
+        totalProducts={filteredProducts.length} 
+        viewMode={viewMode} 
+        setViewMode={setViewMode} 
+        isFilterOpen={isFilterOpen} 
+        setIsFilterOpen={setIsFilterOpen} 
+      />
       <div className="flex gap-12 px-4 md:px-16 mt-8 items-start relative">
-        <FilterSidebar isOpen={isFilterOpen} selectedFilters={selectedFilters} setSelectedFilters={setSelectedFilters} />
+        {/* السايد بار */}
+        <FilterSidebar 
+          isOpen={isFilterOpen} 
+          selectedFilters={selectedFilters} 
+          setSelectedFilters={setSelectedFilters} 
+        />
+        
+        {/* عرض المنتجات */}
         <div className="flex-1 w-full">
           {filteredProducts.length > 0 ? (
-            <div className={`grid gap-4 md:gap-6 ${viewMode === 1 ? 'grid-cols-1' : viewMode === 2 ? 'grid-cols-2' : viewMode === 3 ? 'grid-cols-2 md:grid-cols-3' : 'grid-cols-2 lg:grid-cols-4'}`}>
+            <div className={`grid gap-4 md:gap-6 ${
+              viewMode === 1 ? 'grid-cols-1' : 
+              viewMode === 2 ? 'grid-cols-2' : 
+              viewMode === 3 ? 'grid-cols-2 md:grid-cols-3' : 
+              'grid-cols-2 lg:grid-cols-4'
+            }`}>
               {filteredProducts.map((product) => (
                 <ShopProductCard key={product.id} {...product} viewMode={viewMode} />
               ))}
