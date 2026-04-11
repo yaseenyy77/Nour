@@ -1,119 +1,130 @@
 import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Heart, ArrowLeft, ShieldCheck, Truck, Weight, Layers } from 'lucide-react';
+import { Heart, ArrowLeft, ShieldCheck, Weight, Layers, BadgeCheck, Share2 } from 'lucide-react';
 import { useFavorites } from '../context/FavoritesContext';
-// تأكد من استيراد ملف البيانات الخاص بك
-import { productsData } from '../data/productsData'; 
+import { useInventory } from '../hooks/useSliders'; 
 
 const ProductDetails = () => {
   const { id } = useParams();
-  const navigate = useNavigate(); // أداة التنقل
+  const navigate = useNavigate();
   const { favorites, toggleFavorite } = useFavorites();
-
-  // البحث عن المنتج بالـ ID
-  const product = productsData.find(item => item.id === parseInt(id) || item.id === id);
+  
+  // جلب كل المنتجات والبحث عن المنتج المطلوب بالـ ID
+  const { data: products = [], isLoading } = useInventory();
+  const product = products.find(item => item.id.toString() === id);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [id]);
 
-  // دالة الرجوع للخلف
-  const handleBack = () => {
-    if (window.history.length > 1) {
-      navigate(-1); // يرجعك لآخر صفحة كنت فيها
-    } else {
-      navigate('/shop'); // لو مفيش تاريخ رجوع يوديك الشوب
-    }
-  };
+  const isFavorite = favorites.some(item => item.id === product?.id);
 
-  if (!product) {
-    return (
-      <div className="min-h-screen flex items-center justify-center flex-col gap-6">
-        <h2 className="text-2xl font-bold text-[#001b44]">Product Not Found</h2>
-        <button onClick={() => navigate('/shop')} className="text-[#d4af37] font-bold underline">Back to Shop</button>
-      </div>
-    );
-  }
+  if (isLoading) return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#d4af37]"></div>
+    </div>
+  );
 
-  const isFavorite = favorites.some(item => item.id === product.id);
+  if (!product) return (
+    <div className="min-h-screen flex flex-col items-center justify-center gap-6">
+      <h2 className="text-2xl font-black text-[#001b44] uppercase">Piece Not Found</h2>
+      <button onClick={() => navigate('/shop')} className="bg-[#001b44] text-white px-8 py-3 rounded-full font-bold">Back to Shop</button>
+    </div>
+  );
 
   return (
-    <div className="min-h-screen bg-white pt-32 pb-20 px-6">
+    <div className="min-h-screen bg-[#fdfdfd] pt-32 pb-20 px-4 md:px-12">
       <div className="max-w-7xl mx-auto">
         
-        {/* زرار الباك المعدل */}
+        {/* زر الرجوع */}
         <button 
-          onClick={handleBack} 
-          className="flex items-center gap-2 text-gray-400 hover:text-[#d4af37] transition-all text-[10px] uppercase tracking-[0.4em] mb-16 group"
+          onClick={() => navigate(-1)} 
+          className="group flex items-center gap-2 text-[#001b44] font-black uppercase text-[10px] tracking-widest mb-12 hover:text-[#d4af37] transition-all"
         >
-          <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" /> 
-          Back to Collection
+          <div className="p-2 rounded-full bg-white shadow-sm group-hover:shadow-md transition-all">
+            <ArrowLeft size={18} />
+          </div>
+          Go Back
         </button>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
           
-          {/* صورة المنتج */}
-          <div className="relative bg-[#fcfcfc] p-10 border border-gray-50 aspect-square flex items-center justify-center overflow-hidden">
-            <img 
-              src={product.image} 
-              alt={product.name} 
-              className="max-w-full h-auto object-contain mix-blend-multiply transition-transform duration-1000 hover:scale-110" 
-            />
-            <div className="absolute top-0 left-0 bg-[#001b44] text-[#d4af37] px-6 py-2 font-black text-[10px] uppercase tracking-widest">
-              {product.material}
+          {/* القسم الأيسر: عرض الصورة */}
+          <div className="relative group">
+            <div className="aspect-[4/5] bg-white rounded-[3rem] overflow-hidden border border-gray-100 shadow-2xl shadow-gray-200/50 relative">
+              <img 
+                src={product.image} 
+                alt={product.name} 
+                className="w-full h-full object-contain p-12 transition-transform duration-1000 group-hover:scale-110" 
+              />
+              
+              {/* Badge البراند */}
+              <div className="absolute top-8 left-8 bg-white/90 backdrop-blur-md px-6 py-2 rounded-2xl border border-gray-100 shadow-sm">
+                <p className="text-[10px] font-black text-[#d4af37] uppercase tracking-widest">{product.brand || "Royal Collection"}</p>
+              </div>
             </div>
           </div>
 
-          {/* معلومات المنتج */}
+          {/* القسم الأيمن: تفاصيل المنتج */}
           <div className="flex flex-col">
-            <div className="flex items-center gap-3 mb-6">
-               <span className="h-[1px] w-10 bg-[#d4af37]"></span>
-               <span className="text-[10px] text-[#d4af37] font-black uppercase tracking-[0.5em]">{product.manufacturer || "Nour Gold"}</span>
-            </div>
-
-            <h1 className="text-5xl md:text-6xl font-black text-[#001b44] uppercase italic tracking-tighter leading-none mb-6">
-              {product.name}
-            </h1>
-            
-            <p className="text-gray-500 text-sm md:text-base leading-relaxed mb-12 max-w-lg">
-               قطعة فريدة مصممة بعناية فائقة لتناسب ذوقك الرفيع. تعكس هذه المجموعة من {product.category} جمال الذهب الـ {product.material} الخالص بلمسات عصرية خالدة.
-            </p>
-
-            <div className="grid grid-cols-2 gap-12 border-y border-gray-100 py-10 mb-12">
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 text-gray-400 uppercase tracking-widest text-[9px] font-bold">
-                  <Layers size={14} /> Material
+            <div className="mb-6">
+                <div className="flex items-center gap-2 mb-4">
+                    <span className="bg-[#d4af37]/10 text-[#d4af37] px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-tighter">In Stock</span>
                 </div>
-                <p className="text-xl font-black text-[#001b44]">{product.material}</p>
+                <h1 className="text-4xl md:text-6xl font-black text-[#001b44] uppercase italic tracking-tighter leading-tight mb-2">
+                  {product.name}
+                </h1>
+            </div>
+
+            {/* مواصفات القطعة في كروت صغيرة */}
+            <div className="grid grid-cols-3 gap-4 my-10">
+              <div className="bg-white p-6 rounded-[2rem] border border-gray-50 shadow-sm hover:shadow-md transition-all text-center">
+                <Weight className="text-[#d4af37] mx-auto mb-3" size={24} />
+                <p className="text-[9px] font-bold text-gray-400 uppercase mb-1">Weight</p>
+                <p className="text-lg font-black text-[#001b44]">{product.weight} G</p>
               </div>
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 text-gray-400 uppercase tracking-widest text-[9px] font-bold">
-                  <Weight size={14} /> Weight
+              
+              <div className="bg-white p-6 rounded-[2rem] border border-gray-50 shadow-sm hover:shadow-md transition-all text-center">
+                <Layers className="text-[#d4af37] mx-auto mb-3" size={24} />
+                <p className="text-[9px] font-bold text-gray-400 uppercase mb-1">Karat</p>
+                <p className="text-lg font-black text-[#001b44]">{product.karat}</p>
+              </div>
+
+              <div className="bg-white p-6 rounded-[2rem] border border-gray-50 shadow-sm hover:shadow-md transition-all text-center">
+                <BadgeCheck className="text-[#d4af37] mx-auto mb-3" size={24} />
+                <p className="text-[9px] font-bold text-gray-400 uppercase mb-1">Category</p>
+                <p className="text-lg font-black text-[#001b44]">{product.category || "Jewelry"}</p>
+              </div>
+            </div>
+
+            {/* قسم الضمان فقط */}
+            <div className="mb-10 text-left p-4 bg-gray-50 rounded-2xl flex items-start gap-4">
+                <ShieldCheck className="text-[#d4af37] shrink-0" size={20} />
+                <div>
+                <h4 className="text-[11px] font-black text-[#001b44] uppercase mb-1">Lifetime Authenticity Guarantee</h4>
+                <p className="text-[10px] text-gray-500 font-bold leading-relaxed">Official certificate of authenticity and gold purity stamp included with every piece.</p>
                 </div>
-                <p className="text-xl font-black text-[#001b44]">{product.weight} G</p>
-              </div>
             </div>
 
-            <button 
-              onClick={() => toggleFavorite(product)}
-              className={`w-full py-5 flex items-center justify-center gap-4 font-black uppercase text-[11px] tracking-[0.3em] transition-all duration-500 border ${
-                isFavorite 
-                ? 'bg-red-500 border-red-500 text-white shadow-lg shadow-red-200' 
-                : 'bg-[#001b44] border-[#001b44] text-white hover:bg-transparent hover:text-[#001b44]'
-              }`}
-            >
-              <Heart size={18} className={isFavorite ? 'fill-white' : ''} />
-              {isFavorite ? 'In Your Favorites' : 'Add To Favorites'}
-            </button>
+            {/* أزرار الأكشن */}
+            <div className="flex flex-col sm:flex-row gap-4">
+              <button 
+                onClick={() => toggleFavorite({ id: product.id, name: product.name, image: product.image, weight: product.weight, material: product.karat })}
+                className={`flex-1 py-6 rounded-[1.5rem] flex items-center justify-center gap-4 font-black uppercase text-[11px] tracking-[0.3em] transition-all duration-500 shadow-xl ${
+                  isFavorite 
+                  ? 'bg-red-500 text-white shadow-red-200' 
+                  : 'bg-[#001b44] text-white hover:bg-[#d4af37] hover:shadow-yellow-100'
+                }`}
+              >
+                <Heart size={20} className={isFavorite ? 'fill-white' : ''} />
+                {isFavorite ? 'In Your Wishlist' : 'Add to Wishlist'}
+              </button>
 
-            <div className="mt-12 pt-8 border-t border-gray-50 flex flex-wrap gap-8">
-              <div className="flex items-center gap-2 text-[9px] font-bold text-gray-400 uppercase tracking-widest">
-                <ShieldCheck size={16} className="text-[#d4af37]" /> Lifetime Warranty
-              </div>
-              <div className="flex items-center gap-2 text-[9px] font-bold text-gray-400 uppercase tracking-widest">
-                <Truck size={16} className="text-[#d4af37]" /> Insured Shipping
-              </div>
+              <button className="p-6 rounded-[1.5rem] bg-white border border-gray-100 text-[#001b44] hover:bg-gray-50 transition-all shadow-sm">
+                <Share2 size={24} />
+              </button>
             </div>
+
           </div>
         </div>
       </div>
