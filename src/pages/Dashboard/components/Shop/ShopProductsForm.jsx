@@ -4,7 +4,7 @@ import { useAddProduct } from '../../../../hooks/useSliders';
 const ShopProductsForm = ({ onProductAdded }) => {
   const [formData, setFormData] = useState({ 
     name: '', 
-    category: 'Ring', 
+    category: 'Rings', // محدث للفئات المطلوبة
     karat: '21K', 
     weight: '', 
     brand: "L'azurde",
@@ -17,7 +17,7 @@ const ShopProductsForm = ({ onProductAdded }) => {
     e.preventDefault();
     addMutation.mutate(formData, {
       onSuccess: () => {
-        setFormData({ name: '', category: 'Ring', karat: '21K', weight: '', brand: "L'azurde", image: '' });
+        setFormData({ name: '', category: 'Rings', karat: '21K', weight: '', brand: "L'azurde", image: '' });
         if (onProductAdded) onProductAdded();
       }
     });
@@ -44,10 +44,23 @@ const ShopProductsForm = ({ onProductAdded }) => {
             onChange={(e)=>setFormData({...formData, category: e.target.value})} 
             className="w-full p-4 rounded-2xl border-2 font-bold outline-none"
           >
-            <option value="Ring">Ring</option>
-            <option value="Necklace">Necklace</option>
-            <option value="Bracelet">Bracelet</option>
-            <option value="Earring">Earring</option>
+            <option value="Rings">Rings</option>
+            <option value="Necklaces">Necklaces</option>
+            <option value="Bracelets">Bracelets</option>
+            <option value="Earrings">Earrings</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="text-[10px] font-black uppercase text-[#123456] mb-2 block ml-2">Brand</label>
+          <select 
+            value={formData.brand} 
+            onChange={(e)=>setFormData({...formData, brand: e.target.value})} 
+            className="w-full p-4 rounded-2xl border-2 font-bold outline-none"
+          >
+            <option value="L'azurde">L'azurde</option>
+            <option value="Egypt Gold">Egypt Gold</option>
+            <option value="Jawhara">Jawhara</option>
           </select>
         </div>
 

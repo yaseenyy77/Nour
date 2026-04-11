@@ -10,6 +10,7 @@ const Shop = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [selectedFilters, setSelectedFilters] = useState({ category: [], karat: [], brand: [] });
 
+  // منطق الفلترة المطور لربط الخانات الجديدة
   const filteredProducts = useMemo(() => {
     return products.filter(product => {
       const catMatch = selectedFilters.category.length === 0 || selectedFilters.category.includes(product.category);
