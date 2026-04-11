@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-// استيراد المكونات الأخرى (تأكد من المسارات عندك)
-import SliderManagement from './components/Sliders/SliderManagement'; 
-// ملاحظة: مش هنعمل import لـ ProductManagement هنا غير لما نطلبه الخطوة الجاية
-import { LayoutDashboard, Images, Settings, LogOut } from 'lucide-react';
+import SliderManagement from './components/sliders/SliderManagement'; 
+// استيراد مكون إدارة المنتجات بالمسار الصحيح بناءً على الصورة
+import ProductManagement from './components/Shop/ProductManagement'; 
+import { LayoutDashboard, Images, Package, LogOut } from 'lucide-react';
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -30,7 +30,14 @@ const Dashboard = () => {
             <span className="font-bold uppercase text-xs tracking-widest">Home Sliders</span>
           </button>
 
-          {/* هنا كان زرار الشوب القديم واتمسح زي ما طلبت */}
+          {/* زر Inventory الجديد */}
+          <button 
+            onClick={() => setActiveTab('inventory')}
+            className={`flex items-center gap-3 p-4 rounded-xl transition-all ${activeTab === 'inventory' ? 'bg-white text-[#123456]' : 'hover:bg-white/10'}`}
+          >
+            <Package size={20} />
+            <span className="font-bold uppercase text-xs tracking-widest">Inventory</span>
+          </button>
         </nav>
 
         <div className="mt-auto">
@@ -44,10 +51,13 @@ const Dashboard = () => {
       {/* Main Content - المحتوى الرئيسي */}
       <main className="flex-1 p-10 overflow-y-auto">
         <div className="max-w-7xl mx-auto">
-          {activeTab === 'overview' && <StatsOverview />}
+          {activeTab === 'overview' && <div className="text-[#123456] font-black uppercase tracking-widest p-20 text-center">Dashboard Overview Coming Soon</div>}
           {activeTab === 'sliders' && <SliderManagement />}
           
-          {/* هنا هنضيف مكان إدارة المنتجات الجديد في الخطوات الجاية */}
+          {/* عرض إدارة المنتجات التي تحتوي على الفورم والجدول */}
+          {activeTab === 'inventory' && (
+            <ProductManagement onBack={() => setActiveTab('overview')} />
+          )}
         </div>
       </main>
     </div>
