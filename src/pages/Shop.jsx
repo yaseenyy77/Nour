@@ -5,12 +5,12 @@ import ShopProductCard from '../components/Shop/ShopProductCard';
 import { useInventory } from '../hooks/useSliders'; 
 
 const Shop = () => {
-  const { data: products = [], isLoading } = useInventory(); //
-  const [viewMode, setViewMode] = useState(4); //
-  const [isFilterOpen, setIsFilterOpen] = useState(false); //
-  const [selectedFilters, setSelectedFilters] = useState({ category: [], karat: [], brand: [] }); //
+  const { data: products = [], isLoading } = useInventory(); 
+  // تعديل: القيمة الافتراضية 4 عشان يظهر كروت صغيرة من الأول
+  const [viewMode, setViewMode] = useState(4); 
+  const [isFilterOpen, setIsFilterOpen] = useState(false); 
+  const [selectedFilters, setSelectedFilters] = useState({ category: [], karat: [], brand: [] }); 
 
-  // منطق الفلترة الاحترافي 
   const filteredProducts = useMemo(() => {
     return products.filter(product => {
       const catMatch = selectedFilters.category.length === 0 || 
@@ -25,7 +25,7 @@ const Shop = () => {
                          );
       return catMatch && karatMatch && brandMatch;
     });
-  }, [selectedFilters, products]); //
+  }, [selectedFilters, products]); 
 
   if (isLoading) return <div className="min-h-screen flex items-center justify-center text-[#d4af37] font-black uppercase tracking-[0.3em]">Loading Royal Vault...</div>;
 
@@ -39,9 +39,9 @@ const Shop = () => {
         setIsFilterOpen={setIsFilterOpen} 
       />
 
-      <div className="flex flex-col lg:flex-row gap-8 px-4 md:px-12 mt-8 items-start relative">
+      {/* تعديل: تقليل الـ px على الموبايل (px-2) عشان الكروت تاخد مساحة أكبر */}
+      <div className="flex flex-col lg:flex-row gap-4 lg:gap-8 px-2 md:px-12 mt-4 md:mt-8 items-start relative">
         
-        {/* السايد بار المطور - تم إصلاح تمرير الـ Props */}
         <FilterSidebar 
           isOpen={isFilterOpen} 
           setIsFilterOpen={setIsFilterOpen} 
@@ -49,14 +49,15 @@ const Shop = () => {
           setSelectedFilters={setSelectedFilters} 
         />
         
-        {/* عرض المنتجات المتجاوب */}
         <div className="flex-1 w-full">
           {filteredProducts.length > 0 ? (
-            <div className={`grid gap-6 transition-all duration-500 ${
-              viewMode === 1 ? 'grid-cols-1' : 
-              viewMode === 2 ? 'grid-cols-2' : 
-              viewMode === 3 ? 'grid-cols-2 lg:grid-cols-3' : 
-              'grid-cols-2 md:grid-cols-3 xl:grid-cols-4'
+            /* تعديل الـ Grid:
+               1. gap-1.5 على الموبايل عشان الكروت تلزق في بعض زي الصورة.
+               2. grid-cols-2 ثابتة في أغلب الأوضاع للموبايل.
+            */
+            <div className={`grid transition-all duration-500 ${
+              viewMode === 1 ? 'grid-cols-1 gap-4' : 
+              'grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-1.5 md:gap-6'
             }`}>
               {filteredProducts.map((product) => (
                 <ShopProductCard key={product.id} {...product} viewMode={viewMode} />
