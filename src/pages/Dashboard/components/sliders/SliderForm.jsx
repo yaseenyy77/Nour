@@ -1,95 +1,87 @@
-import React, { useState } from 'react';
-// تصحيح المسارات: نطلع 4 مرات للوصول لـ src
-import { useAddSlider } from '../../../../hooks/useSliders';
-import { supabase } from '../../../../supabaseClient'; 
+import React from 'react';
+import { useInventory, useAddSlider } from '../../../../hooks/useSliders';
+import { Plus, Loader2, Package, Tag, Scale } from 'lucide-react';
 
 const SliderForm = ({ onSliderAdded }) => {
-  const [formData, setFormData] = useState({
-    image: '',
-    weight: '',
-    karat: '21K',
-    category: 'rings'
-  });
-
+  // سحب المنتجات من المخزن الفعلي
+  const { data: products = [], isLoading } = useInventory();
   const addSliderMutation = useAddSlider();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    addSliderMutation.mutate(formData, {
+  const handleAddToSlider = (product) => {
+    // تجهيز البيانات لجدول السلايدر بناءً على المنتج المختار
+    const sliderData = {
+      image: product.image,
+      weight: product.weight,
+      karat: product.karat,
+      category: product.category || 'Jewelry'
+    };
+
+    addSliderMutation.mutate(sliderData, {
       onSuccess: () => {
-        alert("تمت الإضافة بنجاح!");
-        setFormData({ image: '', weight: '', karat: '21K', category: 'rings' });
         if (onSliderAdded) onSliderAdded();
       },
       onError: (error) => {
-        alert("خطأ: " + error.message);
+        alert("حدث خطأ أثناء الإضافة: " + error.message);
       }
     });
   };
 
-  return (
-    <form onSubmit={handleSubmit} className="space-y-6 bg-white p-8 rounded-[2.5rem] border-2 border-gray-50 shadow-sm">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Category Select */}
-        <div className="md:col-span-1">
-          <label className="text-[10px] font-black uppercase text-gray-400 mb-2 block tracking-[0.2em]">Select Category</label>
-          <select 
-            value={formData.category} 
-            onChange={(e)=>setFormData({...formData, category: e.target.value})}
-            className="w-full p-4 rounded-xl border-2 border-gray-50 bg-gray-50 focus:bg-white focus:border-[#d4af37] outline-none font-bold text-[#123456]"
-          >
-            <option value="rings">Rings (خواتم)</option>
-            <option value="necklaces">Necklaces (سلاسل)</option>
-            <option value="bracelets">Bracelets (أساور)</option>
-            <option value="earrings">Earrings (حلقان)</option>
-          </select>
-        </div>
-
-        {/* Karat Input */}
-        <div>
-          <label className="text-[10px] font-black uppercase text-gray-400 mb-2 block tracking-[0.2em]">Karat (العيار)</label>
-          <input 
-            required
-            type="text" 
-            value={formData.karat} 
-            onChange={(e)=>setFormData({...formData, karat: e.target.value})}
-            className="w-full p-4 rounded-xl border-2 border-gray-50 bg-gray-50 outline-none font-bold" 
-          />
-        </div>
-
-        {/* Image URL */}
-        <div className="md:col-span-2">
-          <label className="text-[10px] font-black uppercase text-gray-400 mb-2 block tracking-[0.2em]">Image URL</label>
-          <input 
-            required
-            type="text" 
-            value={formData.image} 
-            onChange={(e)=>setFormData({...formData, image: e.target.value})}
-            placeholder="https://..." 
-            className="w-full p-4 rounded-xl border-2 border-gray-50 bg-gray-50 outline-none" 
-          />
-        </div>
-
-        {/* Weight */}
-        <div className="md:col-span-2">
-          <label className="text-[10px] font-black uppercase text-gray-400 mb-2 block tracking-[0.2em]">Weight (G)</label>
-          <input 
-            required
-            type="text" 
-            value={formData.weight} 
-            onChange={(e)=>setFormData({...formData, weight: e.target.value})}
-            className="w-full p-5 rounded-xl border-2 border-gray-50 bg-gray-50 outline-none font-black text-2xl text-[#123456]" 
-          />
-        </div>
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20">
+        <Loader2 className="animate-spin text-[#d4af37] mb-4" size={40} />
+        <p className="text-[#001b44] font-black uppercase text-xs tracking-widest">Loading Inventory...</p>
       </div>
-      
-      <button 
-        disabled={addSliderMutation.isPending}
-        className="w-full bg-[#123456] text-white p-5 rounded-2xl font-black uppercase tracking-[0.3em] hover:bg-[#d4af37] transition-all disabled:opacity-50"
-      >
-        {addSliderMutation.isPending ? 'Processing...' : 'Add to Home Slider'}
-      </button>
-    </form>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="bg-[#001b44]/5 p-4 rounded-2xl border border-[#001b44]/10">
+        <p className="text-[#001b44] font-bold text-center text-xs uppercase tracking-widest">
+           اختر منتجاً من المخزن لإضافته لـ Home Slider
+        </p>
+      </div>
+
+      {products.length === 0 ? (
+        <div className="text-center py-20 bg-gray-50 rounded-[2.5rem] border-2 border-dashed border-gray-200">
+          <Package className="mx-auto mb-4 text-gray-200" size={48} />
+          <p className="text-gray-400 font-bold uppercase text-[10px] tracking-widest">لا توجد منتجات في المخزن حالياً</p>
+        </div>
+      ) : (
+        /* عرض المنتجات في شبكة (2 في الموبايل كما طلبت سابقاً) */
+        <div className="grid grid-cols-2 sm:grid-cols-2 gap-3 md:gap-6">
+          {products.map((p) => (
+            <div key={p.id} className="bg-white rounded-[1.5rem] border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col">
+              <div className="aspect-square bg-[#fcfcfc] relative p-3">
+                <img src={p.image} className="w-full h-full object-contain" alt={p.name} />
+                <div className="absolute bottom-2 left-2">
+                  <span className="bg-white/90 backdrop-blur-md px-1.5 py-0.5 rounded-md text-[7px] font-black text-[#001b44] border border-gray-100">
+                    {p.karat}
+                  </span>
+                </div>
+              </div>
+              
+              <div className="p-3 flex flex-col flex-1">
+                <h3 className="text-[#001b44] font-black uppercase text-[9px] mb-2 truncate">{p.name}</h3>
+                
+                <button 
+                  onClick={() => handleAddToSlider(p)}
+                  disabled={addSliderMutation.isPending}
+                  className="mt-auto w-full bg-[#001b44] text-white py-2 rounded-xl text-[8px] font-black uppercase tracking-widest hover:bg-[#d4af37] transition-all flex items-center justify-center gap-1"
+                >
+                  {addSliderMutation.isPending ? (
+                    <Loader2 size={12} className="animate-spin" />
+                  ) : (
+                    <><Plus size={12} /> Add to Slider</>
+                  )}
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   );
 };
 
