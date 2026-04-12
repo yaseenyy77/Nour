@@ -33,14 +33,14 @@ const SliderManagement = ({ onBack }) => {
         </button>
         <div className="text-center px-2">
             <h2 className="text-[#001b44] font-black uppercase italic text-base md:text-2xl tracking-tighter">Slider Manager</h2>
-            <p className="text-[7px] md:text-[10px] text-gray-400 font-bold uppercase tracking-[0.1em] md:tracking-[0.3em]">Showcase Management</p>
+            <p className="text-[7px] md:text-[10px] text-gray-400 font-bold uppercase tracking-[0.1em] md:tracking-[0.3em]">Home Page Showcase</p>
         </div>
         <button 
           onClick={() => setShowForm(!showForm)} 
           className="bg-[#001b44] text-white px-3 py-2 md:px-8 md:py-4 rounded-xl md:rounded-2xl font-black uppercase text-[9px] md:text-[10px] tracking-widest hover:bg-[#d4af37] transition-all shadow-lg flex items-center gap-1 md:gap-2"
         >
           {showForm ? <LayoutGrid size={14} /> : <Plus size={14} />}
-          <span className="hidden xs:inline">{showForm ? 'View Slider' : 'Add New'}</span>
+          <span className="hidden xs:inline">{showForm ? 'View All' : 'Add New'}</span>
         </button>
       </div>
 
@@ -56,6 +56,7 @@ const SliderManagement = ({ onBack }) => {
               <p className="text-[#001b44] font-black uppercase text-xs tracking-widest">Syncing Sliders...</p>
             </div>
           ) : (
+            /* Responsive Grid: 2 columns on mobile */
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-6">
               {sliders.map((s) => (
                 <div key={s.id} className="group bg-white rounded-[1.2rem] md:rounded-[2rem] border border-gray-100 overflow-hidden hover:shadow-2xl transition-all duration-500 relative">
@@ -83,7 +84,7 @@ const SliderManagement = ({ onBack }) => {
               
               {sliders.length === 0 && (
                 <div className="col-span-full py-20 text-center bg-gray-50 rounded-[2.5rem] border-2 border-dashed border-gray-200">
-                  <p className="text-gray-400 font-bold uppercase text-[10px] tracking-widest">السلايدر فارغ، ابدأ بإضافة منتجات من المخزن</p>
+                  <p className="text-gray-400 font-bold uppercase text-[10px] tracking-widest">السلايدر فارغ حالياً</p>
                 </div>
               )}
             </div>
