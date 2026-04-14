@@ -38,19 +38,19 @@ const FilterSidebar = ({ isOpen, setIsFilterOpen, selectedFilters, setSelectedFi
         bg-white rounded-[2.5rem] shadow-2xl overflow-hidden
         
         /* إعدادات الديسكتوب: تعود لشكلها الأصلي المستقر */
-        lg:sticky lg:top-32 lg:left-0 lg:h-[75vh] lg:w-[260px] lg:m-0 lg:z-0
+        lg:sticky lg:top-32 lg:left-0 lg:h-[75vh] lg:m-0 lg:z-0
         lg:bg-transparent lg:shadow-none lg:rounded-none
         
-        /* الانتقالات (Animations) */
+        /* الانتقالات (Animations) - Updated to handle slide and width smoothly! */
         transition-all duration-500 ease-in-out
         ${isOpen 
-          ? 'translate-y-0 opacity-100' 
-          : 'translate-y-10 opacity-0 pointer-events-none lg:translate-y-0 lg:opacity-100 lg:pointer-events-auto'
+          ? 'translate-y-0 opacity-100 pointer-events-auto lg:w-[260px] lg:translate-x-0' 
+          : 'translate-y-10 opacity-0 pointer-events-none lg:translate-y-0 lg:w-0 lg:-translate-x-8'
         }
       `}>
         
-        {/* الحاوية الداخلية للسكرول */}
-        <div className="flex flex-col h-full p-8 lg:p-0">
+        {/* الحاوية الداخلية للسكرول - Added fixed width (lg:w-[260px]) so content clips beautifully instead of squishing */}
+        <div className="flex flex-col h-full p-8 lg:p-0 w-full lg:w-[260px]">
           
           {/* الهيدر الخاص بالسايد بار */}
           <div className="flex justify-between items-center mb-8 sticky top-0 bg-white lg:bg-transparent z-10 pb-4">

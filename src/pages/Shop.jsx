@@ -8,6 +8,7 @@ const Shop = () => {
   const { data: products = [], isLoading } = useInventory(); 
   // تعديل: القيمة الافتراضية 4 عشان يظهر كروت صغيرة من الأول
   const [viewMode, setViewMode] = useState(4); 
+  // Adjusted to false if you want it closed by default initially (matches the video)
   const [isFilterOpen, setIsFilterOpen] = useState(false); 
   const [selectedFilters, setSelectedFilters] = useState({ category: [], karat: [], brand: [] }); 
 
@@ -39,8 +40,8 @@ const Shop = () => {
         setIsFilterOpen={setIsFilterOpen} 
       />
 
-      {/* تعديل: تقليل الـ px على الموبايل (px-2) عشان الكروت تاخد مساحة أكبر */}
-      <div className="flex flex-col lg:flex-row gap-4 lg:gap-8 px-2 md:px-12 mt-4 md:mt-8 items-start relative">
+      {/* تعديل: Added dynamic gap so when the filter slides away, the layout smoothly claims the empty space */}
+      <div className={`flex flex-col lg:flex-row px-2 md:px-12 mt-4 md:mt-8 items-start relative transition-all duration-500 ease-in-out ${isFilterOpen ? 'gap-4 lg:gap-8' : 'gap-0'}`}>
         
         <FilterSidebar 
           isOpen={isFilterOpen} 

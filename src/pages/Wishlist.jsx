@@ -31,16 +31,16 @@ const Wishlist = () => {
                     className="w-full h-full object-contain p-8 transition-transform duration-700 group-hover:scale-105 mix-blend-multiply" 
                   />
                   
-                  {/* Overlay on Hover */}
-                  <div className="absolute inset-0 bg-[#001b44]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-                  {/* Remove Button */}
+                  {/* زرار الحذف - تعديل: جعله ظاهراً دائماً */}
                   <button 
                     onClick={() => removeFromFavorites(item.id)}
-                    className="absolute top-6 right-6 p-3 bg-white/90 backdrop-blur-md text-red-500 rounded-full shadow-sm hover:bg-red-500 hover:text-white transition-all duration-300 transform translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100"
+                    className="absolute top-6 right-6 z-10 p-3 bg-white text-red-500 rounded-full shadow-md hover:bg-red-500 hover:text-white transition-all duration-300"
+                    title="Remove from wishlist"
                   >
-                    <Trash2 size={18} />
+                    <Trash2 size={20} />
                   </button>
+
+                  <div className="absolute inset-0 bg-[#001b44]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
 
                 {/* Content Section */}
@@ -58,12 +58,11 @@ const Wishlist = () => {
                     </div>
                     <div className="w-[1px] h-8 bg-gray-100"></div>
                     <div className="text-center">
-                      <p className="text-[9px] text-gray-400 uppercase font-bold mb-1">Material</p>
-                      <p className="text-[#001b44] font-black text-sm">{item.material}</p>
+                      <p className="text-[9px] text-gray-400 uppercase font-bold mb-1">Karat</p>
+                      <p className="text-[#001b44] font-black text-sm">{item.karat}K</p>
                     </div>
                   </div>
 
-                  {/* Action Buttons */}
                   <div className="flex gap-3 mt-8">
                     <Link 
                       to={`/product/${item.id}`} 
@@ -77,7 +76,7 @@ const Wishlist = () => {
             ))}
           </div>
         ) : (
-          /* Empty State المطور */
+          /* Empty State */
           <div className="flex flex-col items-center justify-center py-32 text-center bg-white rounded-3xl border-2 border-dashed border-gray-100">
             <div className="relative mb-8">
                 <Heart size={100} className="text-gray-50" />

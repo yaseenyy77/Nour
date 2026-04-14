@@ -8,7 +8,7 @@ const ShopProductsForm = ({ onProductAdded }) => {
     category: 'Ring', 
     karat: '21K', 
     weight: '', 
-    brand: "L'azurde",
+    brand: '', // تم جعلها فارغة افتراضياً للكتابة
     image: '', 
   });
 
@@ -26,25 +26,23 @@ const ShopProductsForm = ({ onProductAdded }) => {
   const handleSend = (e) => {
     e.preventDefault();
     
-    // تنظيف المصفوفة من الفراغات
     const filteredImages = extraImages.filter(url => url.trim() !== "");
 
     const finalData = {
       ...formData,
-      images: filteredImages // تأكد أن العمود في Supabase اسمه images ونوعه text[]
+      images: filteredImages 
     };
 
     console.log("Sending Data to Supabase:", finalData);
 
     addMutation.mutate(finalData, {
       onSuccess: () => {
-        setFormData({ name: '', category: 'Ring', karat: '21K', weight: '', brand: "L'azurde", image: '' });
+        setFormData({ name: '', category: 'Ring', karat: '21K', weight: '', brand: '', image: '' });
         setExtraImages(['']);
         alert("تمت الإضافة بنجاح! ✨");
         if (onProductAdded) onProductAdded();
       },
       onError: (error) => {
-        // ده هيطبع لك المشكلة بالظبط في الـ Console بتاع المتصفح
         console.error("Supabase Mutation Error:", error);
         alert(`فشل الإرسال: ${error.message || 'مشكلة في الاتصال أو الصلاحيات'}`);
       }
@@ -60,10 +58,10 @@ const ShopProductsForm = ({ onProductAdded }) => {
           <input required placeholder="Item Name" value={formData.name} onChange={(e)=>setFormData({...formData, name: e.target.value})} className="w-full p-4 rounded-2xl border-2 border-gray-50 bg-gray-50 outline-none focus:border-[#d4af37] focus:bg-white transition-all font-bold" />
         </div>
 
-        {/* Category & Weight */}
+        {/* Category & Karat */}
         <div>
           <label className="text-[10px] font-black uppercase text-[#123456] mb-2 block ml-2">Category</label>
-          <select value={formData.category} onChange={(e)=>setFormData({...formData, category: e.target.value})} className="w-full p-4 rounded-2xl border-2 border-gray-50 bg-gray-50 font-bold outline-none">
+          <select value={formData.category} onChange={(e)=>setFormData({...formData, category: e.target.value})} className="w-full p-4 rounded-2xl border-2 border-gray-50 bg-gray-50 font-bold outline-none focus:border-[#d4af37] focus:bg-white transition-all">
             <option value="Ring">Ring</option>
             <option value="Necklace">Necklace</option>
             <option value="Bracelet">Bracelet</option>
@@ -71,14 +69,37 @@ const ShopProductsForm = ({ onProductAdded }) => {
           </select>
         </div>
         <div>
+          <label className="text-[10px] font-black uppercase text-[#123456] mb-2 block ml-2">Gold Karat</label>
+          <select value={formData.karat} onChange={(e)=>setFormData({...formData, karat: e.target.value})} className="w-full p-4 rounded-2xl border-2 border-gray-50 bg-gray-50 font-bold outline-none focus:border-[#d4af37] focus:bg-white transition-all">
+            <option value="18K">18K</option>
+            <option value="21K">21K</option>
+            <option value="24K">24K</option>
+          </select>
+        </div>
+
+        {/* Weight & Brand */}
+        <div>
           <label className="text-[10px] font-black uppercase text-[#123456] mb-2 block ml-2">Weight (G)</label>
-          <input required type="number" step="0.01" placeholder="0.00" value={formData.weight} onChange={(e)=>setFormData({...formData, weight: e.target.value})} className="w-full p-4 rounded-2xl border-2 border-gray-50 bg-gray-50 font-bold outline-none focus:border-[#d4af37] focus:bg-white" />
+          <input required type="number" step="0.01" placeholder="0.00" value={formData.weight} onChange={(e)=>setFormData({...formData, weight: e.target.value})} className="w-full p-4 rounded-2xl border-2 border-gray-50 bg-gray-50 font-bold outline-none focus:border-[#d4af37] focus:bg-white transition-all" />
+        </div>
+        <div>
+          <label className="text-[10px] font-black uppercase text-[#123456] mb-2 block ml-2">Brand / House</label>
+          <input 
+            list="brand-options"
+            placeholder="Type or Select Brand" 
+            value={formData.brand} 
+            onChange={(e)=>setFormData({...formData, brand: e.target.value})} 
+            className="w-full p-4 rounded-2xl border-2 border-gray-50 bg-gray-50 font-bold outline-none focus:border-[#d4af37] focus:bg-white transition-all" 
+          />
+          <datalist id="brand-options">
+            {/* اتركها فارغة حالياً كما طلبت، سيتم اقتراح ما تكتبه يدوياً */}
+          </datalist>
         </div>
 
         {/* Main Image */}
         <div className="md:col-span-2">
           <label className="text-[10px] font-black uppercase text-[#123456] mb-2 block ml-2">Main Image (Cover)</label>
-          <input required placeholder="https://..." value={formData.image} onChange={(e)=>setFormData({...formData, image: e.target.value})} className="w-full p-4 rounded-2xl border-2 border-gray-50 bg-gray-50 font-bold outline-none focus:border-[#d4af37] focus:bg-white" />
+          <input required placeholder="https://..." value={formData.image} onChange={(e)=>setFormData({...formData, image: e.target.value})} className="w-full p-4 rounded-2xl border-2 border-gray-50 bg-gray-50 font-bold outline-none focus:border-[#d4af37] focus:bg-white transition-all" />
         </div>
 
         {/* Dynamic Extra Images */}
