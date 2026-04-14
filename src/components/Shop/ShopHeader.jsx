@@ -10,47 +10,35 @@ const ShopHeader = ({ totalProducts, viewMode, setViewMode, isFilterOpen, setIsF
           <span className="text-2xl md:text-3xl font-light text-[#001b44]/20 italic">/{totalProducts}</span>
         </div>
 
-        <div className="flex items-center gap-8">
-          {/* محول الجريد للديسكتاب */}
-          <div className="hidden md:flex items-center border border-gray-200 divide-x divide-gray-200">
-            {[4, 2, 1].map((num) => (
+        <div className="flex items-center gap-4 md:gap-8">
+          
+          {/* محول العرض (View Mode) - يظهر الآن في الموبايل والديسكتاب بجانب الفلتر */}
+          <div className="flex items-center bg-gray-50 rounded-full p-1 border border-gray-100">
+            {[2, 1].map((num) => (
               <button 
                 key={num} 
                 onClick={() => setViewMode(num)}
-                className={`p-3 ${viewMode === num ? 'bg-[#001b44] text-white' : 'text-gray-400'}`}
+                className={`p-2 md:p-2.5 rounded-full transition-all duration-300 ${
+                  viewMode === num 
+                  ? 'bg-white text-[#d4af37] shadow-sm' 
+                  : 'text-gray-400 hover:text-[#001b44]'
+                }`}
               >
-                {num === 4 ? <LayoutGrid size={18} /> : num === 2 ? <Square size={18} /> : <Maximize2 size={18} />}
+                {num === 2 ? <LayoutGrid size={16} /> : <Maximize2 size={16} />}
               </button>
             ))}
           </div>
 
-          <button onClick={() => setIsFilterOpen(!isFilterOpen)} className="flex items-center gap-2">
-            <span className="text-[11px] font-black uppercase tracking-widest text-[#001b44]">
+          <button onClick={() => setIsFilterOpen(!isFilterOpen)} className="flex items-center gap-2 group">
+            <span className="text-[10px] md:text-[11px] font-black uppercase tracking-widest text-[#001b44] group-hover:text-[#d4af37] transition-colors">
               {isFilterOpen ? 'Hide Filters' : 'Show Filters'}
             </span>
-            <ListFilter size={16} className={`text-[#001b44] transition-transform ${isFilterOpen ? 'rotate-180' : ''}`} />
+            <ListFilter size={16} className={`text-[#001b44] transition-transform duration-500 ${isFilterOpen ? 'rotate-180' : ''} group-hover:text-[#d4af37]`} />
           </button>
         </div>
       </div>
 
-      {/* الزرار العايم للموبايل (Fixed Toolbar) */}
-      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[110] md:hidden">
-        <div className="bg-[#1a1a1a]/90 backdrop-blur-md text-white flex items-center gap-2 p-1.5 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-white/10">
-          <button 
-            onClick={() => setViewMode(1)}
-            className={`p-3.5 rounded-full transition-all ${viewMode === 1 ? 'bg-[#d4af37] text-[#001b44]' : 'text-gray-400'}`}
-          >
-            <Maximize2 size={22} />
-          </button>
-          <div className="w-[1px] h-6 bg-white/10" />
-          <button 
-            onClick={() => setViewMode(2)}
-            className={`p-3.5 rounded-full transition-all ${viewMode === 2 ? 'bg-[#d4af37] text-[#001b44]' : 'text-gray-400'}`}
-          >
-            <LayoutGrid size={22} />
-          </button>
-        </div>
-      </div>
+      {/* 🗑️ تم حذف قسم الزرار العائم (Fixed Toolbar) من هنا نهائياً */}
     </>
   );
 };

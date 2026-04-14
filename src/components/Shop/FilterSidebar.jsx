@@ -33,6 +33,7 @@ const FilterSidebar = ({ isOpen, setIsFilterOpen, selectedFilters, setSelectedFi
 
       {/* 2. Aside (السايد بار) */}
       <aside className={`
+      
         /* إعدادات الموبايل: جعلناها عائمة بمسافات من الجوانب */
         fixed left-4 right-4 top-24 bottom-6 z-[70]
         bg-white rounded-[2.5rem] shadow-2xl overflow-hidden
