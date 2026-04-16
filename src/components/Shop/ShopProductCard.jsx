@@ -1,99 +1,119 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Heart } from 'lucide-react'; 
-import { useFavorites } from '../../context/FavoritesContext';
+import { useFavorites } from '../../context/FavoritesContext'; // المسار الصحيح بناءً على هيكل ملفاتك
 
-const ShopProductCard = (product) => {
-  // سحب البيانات من البروبس (بما في ذلك مصفوفة الصور الإضافية)
-  const { id, name, image, images = [], karat, weight, viewMode, brand, badge } = product;
-  const { favorites, toggleFavorite } = useFavorites();
+const ShopProductCard = ({ id, name, image, images = [], karat, weight, brand, viewMode }) => {
   const navigate = useNavigate();
+  const { toggleFavorite, favorites } = useFavorites();
   
-  // الحالة الخاصة بالصورة المعروضة حالياً (تبدأ بالصورة الأساسية)
-  const [activeImage, setActiveImage] = useState(image);
-  
-  const isSingleColumn = viewMode === 1; 
+  // التحقق إذا كان المنتج في المفضلة
   const isFavorite = favorites.some(item => item.id === id);
 
-  // دمج الصورة الأساسية مع مصفوفة الصور الإضافية لعرض المصغرات
-  const allImages = [image, ...images].slice(0, 5); 
+  const allImages = [image, ...images].slice(0, 6);
+  const [activeImage, setActiveImage] = useState(image);
+
+  useEffect(() => {
+    setActiveImage(image);
+  }, [image]);
+
+  const isListView = viewMode === 1;
 
   const handleFavoriteClick = (e) => {
-    e.stopPropagation(); 
-    toggleFavorite({ id, name, image, weight, material: karat });
+    e.stopPropagation(); // منع الانتقال لصفحة المنتج عند الضغط على القلب
+    toggleFavorite({ id, name, image, karat, weight, brand });
   };
 
-  // تصميم مستوحى من الفيديو (Kobe Style) بدون أسعار
-  const renderGridView = () => (
-    <div 
-      className="group flex flex-col bg-white h-full"
+  return (
+    <div
+      className={`group flex cursor-pointer transition-all duration-500 border-b border-transparent hover:border-gray-50 pb-4 ${
+        isListView ? 'flex-row items-start gap-6 md:gap-12 py-8' : 'flex-col w-full'
+      }`}
+      onClick={() => navigate(`/product/${id}`)}
     >
-      {/* منطقة الصورة الرئيسية */}
-      <div 
-        onClick={() => navigate(`/product/${id}`)}
-        className="relative aspect-square w-full bg-[#f6f6f6] overflow-hidden mb-3 cursor-pointer"
-      >
-        {badge && (
-          <div className="absolute top-3 left-3 z-10 bg-[#001b44] text-white text-[9px] uppercase tracking-widest px-2 py-1">
-            {badge}
-          </div>
-        )}
+      {/* 1. حاوية الصورة الأساسية */}
+      <div className={`relative bg-[#f6f6f6] overflow-hidden transition-all duration-500 ${
+        isListView 
+        ? 'w-[150px] h-[150px] md:w-[300px] md:h-[300px] flex-shrink-0' 
+        : 'aspect-square w-full mb-3'
+      }`}>
+        <img
+          src={activeImage}
+          alt={name}
+          className="w-full h-full object-contain p-4 mix-blend-multiply transition-opacity duration-300"
+        />
 
+        {/* زر القلب العائم */}
         <button 
           onClick={handleFavoriteClick}
-          className="absolute top-3 right-3 z-10 p-2"
+          className="absolute top-3 right-3 z-10 p-2 bg-white/80 backdrop-blur-sm rounded-full shadow-sm hover:bg-white transition-all group/heart"
         >
-          <Heart size={20} className={`transition-colors duration-300 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-300 hover:text-black'}`} />
+          <Heart 
+            size={18} 
+            className={`transition-colors duration-300 ${
+              isFavorite 
+              ? 'fill-red-500 text-red-500' 
+              : 'text-[#001b44] group-hover/heart:text-red-500'
+            }`} 
+          />
         </button>
-
-        <img 
-          src={activeImage} 
-          className="w-full h-full object-contain p-6 transition-opacity duration-300" 
-          alt={name} 
-        />
       </div>
 
-      {/* شريط الصور المصغرة (نفس ستايل الفيديو) */}
-      <div className="flex gap-2 mb-4 overflow-x-auto no-scrollbar">
-        {allImages.map((img, index) => (
-          <div 
-            key={index}
-            onMouseEnter={() => setActiveImage(img)} // التغيير عند التمرير مثل المواقع الرياضية
-            className={`w-12 h-12 min-w-[48px] bg-[#f6f6f6] border-b-2 cursor-pointer transition-all ${activeImage === img ? 'border-[#d4af37]' : 'border-transparent opacity-60'}`}
-          >
-            <img src={img} className="w-full h-full object-contain p-1" alt={`${name} view ${index}`} />
-          </div>
-        ))}
-      </div>
-
-      {/* معلومات المنتج (بدون سعر طبقاً لطلبك) */}
-      <div className="flex flex-col text-left">
-        <span className="text-[10px] text-[#d4af37] font-bold uppercase tracking-widest mb-1">{badge || "New Arrival"}</span>
+      {/* 2. حاوية المعلومات والصور المصغرة */}
+      <div className={`flex flex-col flex-1 ${isListView ? 'justify-start pt-2' : ''}`}>
         
-        <h3 className="text-lg font-medium text-[#111] leading-tight mb-1">
-          {name}
-        </h3>
-        
-        <p className="text-gray-500 text-sm mb-3">{brand || "Royal Jewelry"}</p>
+        <div className="flex flex-col text-left">
+          <h3 className={`font-medium text-[#111] leading-tight transition-all ${
+            isListView ? 'text-xl md:text-2xl mb-1' : 'text-[16px]'
+          }`}>
+            {name}
+          </h3>
 
-        {/* عرض القيراط والوزن فقط */}
-        <div className="flex items-center gap-3 border-t border-gray-100 pt-3">
-          <div className="flex flex-col">
-            <span className="text-[9px] text-gray-400 uppercase">Purity</span>
-            <span className="text-sm font-semibold text-[#001b44]">{karat}</span>
-          </div>
-          <div className="w-[1px] h-6 bg-gray-200"></div>
-          <div className="flex flex-col">
-            <span className="text-[9px] text-gray-400 uppercase">Weight</span>
-            <span className="text-sm font-semibold text-[#001b44]">{weight} G</span>
+          <p className={`text-[#707070] transition-all ${
+            isListView ? 'text-base md:text-lg mb-4' : 'text-[15px] mt-1'
+          }`}>
+            {brand || "Nour Gold"}
+          </p>
+
+          <div className={`flex items-center gap-2 font-medium text-[#111] transition-all ${
+            isListView ? 'text-lg md:text-xl mb-6' : 'text-[15px] mt-2'
+          }`}>
+            <span>{karat}</span>
+            <span className="text-gray-300">|</span>
+            <span>{weight} G</span>
           </div>
         </div>
+
+        {/* شريط الصور المصغرة */}
+        {allImages.length > 1 && (
+          <div 
+            className={`flex gap-2 overflow-x-auto no-scrollbar ${
+              isListView ? 'mt-auto' : 'mb-3 order-first md:order-none' 
+            }`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {allImages.map((img, idx) => (
+              <div
+                key={idx}
+                onMouseEnter={() => setActiveImage(img)}
+                className={`bg-[#f6f6f6] flex-shrink-0 cursor-pointer overflow-hidden border transition-all ${
+                  isListView ? 'w-[50px] h-[50px] md:w-[64px] md:h-[64px]' : 'w-[44px] h-[44px]'
+                } ${
+                  activeImage === img ? 'border-[#111]' : 'border-transparent hover:border-gray-300'
+                }`}
+              >
+                <img
+                  src={img}
+                  alt={`${name} thumbnail ${idx}`}
+                  className="w-full h-full object-cover mix-blend-multiply p-1"
+                />
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
-
-  // ملاحظة: يمكنك تطبيق نفس المنطق على renderSingleColumnView إذا أردت
-  return isSingleColumn ? renderSingleColumnView() : renderGridView();
 };
 
 export default ShopProductCard;

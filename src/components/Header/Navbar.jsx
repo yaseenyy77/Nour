@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react'; 
 import Logo from './Logo';
 import NavLinks from './NavLinks';
@@ -6,25 +7,47 @@ import Actions from './Actions';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
+  const lastScrollY = useRef(0);
+  const location = useLocation();
+  const isShopPage = location.pathname === '/shop';
 
   useEffect(() => {
-    // مراقبة السكرول في الحاوية الرئيسية
     const snapContainer = document.getElementById('snap-container');
+    
     const handleScroll = () => {
-      if (snapContainer && snapContainer.scrollTop > 20) setIsScrolled(true);
+      const currentScrollY = snapContainer ? snapContainer.scrollTop : 0;
+
+      // تغيير خلفية الناف بار
+      if (currentScrollY > 20) setIsScrolled(true);
       else setIsScrolled(false);
+
+      // منطق الإخفاء والإظهار (فقط في صفحة الشوب)
+      if (isShopPage) {
+        if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
+          setIsVisible(false); // نازل لتحت -> اخفي
+        } else {
+          setIsVisible(true); // طالع لفوق -> اظهر
+        }
+      } else {
+        setIsVisible(true); // في باقي الصفحات دايماً ظاهر
+      }
+
+      lastScrollY.current = currentScrollY;
     };
+
     if (snapContainer) snapContainer.addEventListener('scroll', handleScroll);
     return () => snapContainer?.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [isShopPage]);
 
   return (
     <>
-      {/* تم الحفاظ على fixed لضمان بقاء الهيدر في الأعلى دائماً */}
-      <nav className={`fixed top-0 left-0 w-full z-[9999] transition-all duration-500 px-6 md:px-20 ${
-        isScrolled ? 'bg-[#001b44]/95 backdrop-blur-md py-3 shadow-lg' : 'bg-[#001b4400] py-6'
-      }`}>
+      <nav 
+        className={`fixed top-0 left-0 w-full z-[9999] transition-all duration-500 px-6 md:px-20 ${
+          isScrolled ? 'bg-[#001b44]/95 backdrop-blur-md py-3 shadow-lg' : 'bg-[#001b4400] py-6'
+        } ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}
+      >
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <button onClick={() => setIsOpen(true)} className="lg:hidden text-[#d4af37] p-2">
             <Menu size={28} />
