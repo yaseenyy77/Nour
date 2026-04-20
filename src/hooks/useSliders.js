@@ -1,18 +1,15 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../supabaseClient'; 
 
-// --- هوكس السلايدرز ---
-export const useSliders = (brand) => {
+export const useSliders = (category) => {
   return useQuery({
-    queryKey: ['sliders', brand],
+    queryKey: ['sliders', category],
     queryFn: async () => {
       let query = supabase.from('sliders').select('*');
-      
-      // التعديل: الفلترة بالبراند (المصنع) بدلاً من الكاتيجوري
-      if (brand) {
-        query = query.eq('manufacturer', brand);
+      // الفلترة باستخدام عمود category المتاح في جدولك
+      if (category) {
+        query = query.eq('category', category); 
       }
-
       const { data, error } = await query.order('created_at', { ascending: false });
       if (error) throw error;
       return data || [];
@@ -32,7 +29,6 @@ export const useAddSlider = () => {
   });
 };
 
-// --- هوكس المخزون ---
 export const useInventory = () => {
   return useQuery({
     queryKey: ['inventory'],
@@ -41,30 +37,5 @@ export const useInventory = () => {
       if (error) throw error;
       return data || [];
     },
-  });
-};
-
-export const useDeleteProduct = () => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: async (id) => {
-      const { error } = await supabase.from('products').delete().eq('id', id);
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['inventory'] });
-    },
-  });
-};
-
-export const useAddProduct = () => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: async (newProduct) => {
-      const { data, error } = await supabase.from('products').insert([newProduct]);
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['inventory'] }),
   });
 };

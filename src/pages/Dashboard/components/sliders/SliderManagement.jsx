@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import SliderForm from './SliderForm'; 
 import { supabase } from '../../../../supabaseClient'; 
-import { Trash2, ArrowLeft, Plus, LayoutGrid, Loader2, Sparkles, Scale, Factory } from 'lucide-react';
+import { Trash2, ArrowLeft, Plus, LayoutGrid, Loader2, Sparkles, Tag } from 'lucide-react';
 
 const SliderManagement = ({ onBack }) => {
   const [sliders, setSliders] = useState([]);
@@ -18,7 +18,7 @@ const SliderManagement = ({ onBack }) => {
   useEffect(() => { fetchSliders(); }, []);
 
   const handleDelete = async (id) => {
-    if (window.confirm('هل تريد إزالة هذه القطعة من المعرض؟')) {
+    if (window.confirm('هل تريد إزالة هذا المنتج من العرض؟')) {
       const { error } = await supabase.from('sliders').delete().eq('id', id);
       if (!error) fetchSliders();
     }
@@ -33,10 +33,10 @@ const SliderManagement = ({ onBack }) => {
         <div className="text-center">
             <h2 className="text-[#001b44] font-black uppercase italic text-xl tracking-tighter flex items-center gap-2">
               <Sparkles size={20} className="text-[#d4af37]" />
-              Gallery Showcase
+              Brand Gallery
             </h2>
         </div>
-        <button onClick={() => setShowForm(!showForm)} className="bg-[#001b44] text-white px-5 py-3 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-[#d4af37] transition-all flex items-center gap-2">
+        <button onClick={() => setShowForm(!showForm)} className="bg-[#001b44] text-white px-5 py-3 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-[#d4af37] transition-all flex items-center gap-2 shadow-lg">
           {showForm ? <LayoutGrid size={16} /> : <Plus size={16} />}
           <span>{showForm ? 'View Active' : 'Add From Inventory'}</span>
         </button>
@@ -48,7 +48,7 @@ const SliderManagement = ({ onBack }) => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {sliders.map((s) => (
             <div key={s.id} className="group bg-white rounded-[2rem] border border-gray-100 overflow-hidden hover:shadow-xl transition-all relative">
-              <div className="aspect-square bg-[#fcfcfc] p-4">
+              <div className="aspect-square bg-[#fcfcfc] p-4 relative">
                 <img src={s.image} className="w-full h-full object-contain" alt="" />
                 <button onClick={() => handleDelete(s.id)} className="absolute top-3 right-3 p-2 bg-red-500 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-all">
                   <Trash2 size={14} />
@@ -56,7 +56,7 @@ const SliderManagement = ({ onBack }) => {
               </div>
               <div className="p-4 border-t border-gray-50 text-center">
                 <span className="text-[8px] bg-gray-50 px-2 py-1 rounded text-gray-400 font-black uppercase flex items-center justify-center gap-1 mb-2">
-                  <Factory size={8} /> {s.manufacturer}
+                  <Tag size={8} /> {s.category}
                 </span>
                 <p className="font-black text-[#001b44] text-[10px] uppercase truncate">{s.name}</p>
               </div>
