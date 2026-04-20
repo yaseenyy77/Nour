@@ -147,4 +147,4 @@ const CategoryGrid = () => {
   );
 };
 
-export default CategoryGrid;
+export default CategoryGrid;  

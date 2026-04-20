@@ -5,7 +5,7 @@ const FilterSidebar = ({ isOpen, setIsFilterOpen, selectedFilters, setSelectedFi
   const filterCategories = [
     { id: 'category', title: 'Collection', options: ['Ring', 'Necklace', 'Bracelet', 'Earring',] },
     { id: 'karat', title: 'Gold Purity', options: ['18K', '21K', '24K'] },
-    { id: 'brand', title: 'House of Design', options: ["L'azurde", "Egypt Gold", "Jawhara", "Iram"] },
+    { id: 'brand', title: 'House of Design', options: ["L'azurde", "Egypt Gold", "Jawhara", "Iram","Selema Gold","Kirmena","Damas","Siran","Glamour","King Gold"] },
   ];
 
   const handleFilterClick = (category, option) => {
